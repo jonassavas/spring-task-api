@@ -63,4 +63,29 @@ public class TaskGroupControllerIntegrationTests {
             MockMvcResultMatchers.jsonPath("$.taskGroupName").value("Task Group A")
         );
     }
+
+    @Test
+    public void testThatListTaskGroupsReturnsHttpStatus200() throws Exception{
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/taskgroups")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatListTaskGroupsReturnsListOfTaskGroups() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+        
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/taskgroups")
+                .contentType(MediaType.APPLICATION_JSON)    
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$[0].taskGroupName").value("Task Group A")
+        );
+    }
 }
