@@ -1,0 +1,43 @@
+package com.jonassavas.spring_task_api.controllers;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jonassavas.spring_task_api.domain.dto.TaskDto;
+import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
+import com.jonassavas.spring_task_api.mappers.Mapper;
+import com.jonassavas.spring_task_api.services.TaskService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+@RestController
+//@RequestMapping(path = "/taskgroups/{groupId}/tasks")
+public class TaskController {
+    
+    private Mapper<TaskEntity, TaskDto> taskMapper;
+    private TaskService taskService;
+
+
+    public TaskController(Mapper<TaskEntity, TaskDto> taskMapper, TaskService taskService){
+        this.taskMapper = taskMapper;
+        this.taskService = taskService;
+    }
+    
+
+    @PostMapping("/taskgroups/{groupId}/tasks")
+    public ResponseEntity<TaskDto> createTask(
+            @PathVariable Long groupId,
+            @RequestBody TaskDto dto) {
+        
+        TaskEntity taskEntity = taskMapper.mapFrom(dto);
+        TaskEntity savedTask = taskService.createTask(groupId, taskEntity);
+        TaskDto responseDto = taskMapper.mapTo(savedTask);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+}

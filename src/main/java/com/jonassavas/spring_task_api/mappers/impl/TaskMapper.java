@@ -11,7 +11,7 @@ import com.jonassavas.spring_task_api.mappers.Mapper;
 @Component
 public class TaskMapper implements Mapper<TaskEntity, TaskDto> {
 
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     public TaskMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;

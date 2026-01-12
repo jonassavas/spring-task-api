@@ -28,19 +28,13 @@ public class TaskGroupController {
 
     private Mapper<TaskGroupEntity, CreateTaskGroupDto> createTaskGroupMapper;
     private Mapper<TaskGroupEntity, TaskGroupDto> taskGroupMapper;
-    private Mapper<TaskEntity, TaskDto> taskMapper;
-    private TaskService taskService;
 
     public TaskGroupController(TaskGroupService taskGroupService, 
                                 Mapper<TaskGroupEntity, CreateTaskGroupDto> createTaskGroupMapper,
-                                Mapper<TaskGroupEntity, TaskGroupDto> taskGroupMapper,
-                                Mapper<TaskEntity, TaskDto> taskMapper,
-                                TaskService taskService){
+                                Mapper<TaskGroupEntity, TaskGroupDto> taskGroupMapper){
         this.taskGroupService = taskGroupService;
         this.createTaskGroupMapper = createTaskGroupMapper;
         this.taskGroupMapper = taskGroupMapper;
-        this.taskMapper = taskMapper;
-        this.taskService = taskService;
     }
 
     @PostMapping(path = "/taskgroups")
@@ -54,18 +48,6 @@ public class TaskGroupController {
     public List<TaskGroupDto> listTaskGroups() {
         List<TaskGroupEntity> taskGroups = taskGroupService.findAll();
         return taskGroups.stream().map(taskGroupMapper::mapTo).collect(Collectors.toList());
-    }
-    
-    
-    @PostMapping("/taskgroups/{groupId}/tasks")
-    public ResponseEntity<TaskDto> addTask(
-            @PathVariable Long groupId,
-            @RequestBody TaskDto dto) {
-        
-        TaskEntity taskEntity = taskMapper.mapFrom(dto);
-        TaskEntity savedTask = taskService.createTask(groupId, taskEntity);
-        TaskDto responseDto = taskMapper.mapTo(savedTask);
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
 }
