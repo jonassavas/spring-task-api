@@ -58,4 +58,30 @@ public class TaskControllerIntegrationTests {
             MockMvcResultMatchers.status().isCreated()
         );
     }
+
+    @Test
+    public void testThatCreateTaskReturnsSavedTask() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskDto testTaskDtoA = TestDataUtil.createTestTaskDtoA();
+
+        testTaskDtoA.setTaskGroupId(testTaskGroupEntityA.getId());
+
+        String taskJson = objectMapper.writeValueAsString(testTaskDtoA);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/taskgroups/" + testTaskGroupEntityA.getId() + "/tasks")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(taskJson)
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.id").isNumber()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskGroupId").value(testTaskGroupEntityA.getId())
+        ).andExpect( 
+            MockMvcResultMatchers.jsonPath("$.taskName").value("Task A")
+        );
+    }
+
+
 }
