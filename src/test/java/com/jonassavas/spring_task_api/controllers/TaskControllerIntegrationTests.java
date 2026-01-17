@@ -13,9 +13,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonassavas.spring_task_api.TestDataUtil;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
+import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 import com.jonassavas.spring_task_api.services.TaskService;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -81,6 +84,23 @@ public class TaskControllerIntegrationTests {
         ).andExpect( 
             MockMvcResultMatchers.jsonPath("$.taskName").value("Task A")
         );
+    }
+
+    @Test
+    public void testThatDeleteTask() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+
+        assertThat(testTaskGroupEntityA.getTasks()).hasSize(1);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/tasks/" + testTaskEntityA.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent());
     }
 
 

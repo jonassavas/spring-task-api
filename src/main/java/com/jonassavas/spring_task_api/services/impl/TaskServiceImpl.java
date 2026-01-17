@@ -25,9 +25,21 @@ public class TaskServiceImpl implements TaskService{
         TaskGroupEntity taskGroup = taskGroupRepository.findById(groupId)
                 .orElseThrow(() -> new EntityNotFoundException("TaskGroup not found with id " + groupId));
 
-        taskGroup.addTask(taskEntity);
+        taskEntity.setTaskGroup(taskGroup);
 
-        return taskRepository.save(taskEntity);
+        taskGroup.addTask(taskEntity); // Cascade saves task automatically
+
+        return taskEntity;
+    }
+
+    @Override
+    public void deleteTask(Long id){
+        TaskEntity task = taskRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Task not found with id " + id));
+
+        TaskGroupEntity group = task.getTaskGroup();
+
+        group.removeTask(task); // Triggers orphanRemoval
     }
 
 }
