@@ -29,6 +29,8 @@ public class TaskServiceImpl implements TaskService{
 
         taskGroup.addTask(taskEntity); // Cascade saves task automatically
 
+        taskRepository.save(taskEntity);
+
         return taskEntity;
     }
 

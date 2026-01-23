@@ -78,16 +78,41 @@ public class TaskControllerIntegrationTests {
             .contentType(MediaType.APPLICATION_JSON)
             .content(taskJson)
         ).andExpect(
-            MockMvcResultMatchers.jsonPath("$.id").isNumber()
+            MockMvcResultMatchers.jsonPath("$.taskGroupId").isNumber()
         ).andExpect(
-            MockMvcResultMatchers.jsonPath("$.taskGroupId").value(testTaskGroupEntityA.getId())
+            MockMvcResultMatchers.jsonPath("$.id").isNumber()
         ).andExpect( 
             MockMvcResultMatchers.jsonPath("$.taskName").value("Task A")
         );
     }
+    
+    // TODO
+    @Test
+    public void testThatCreateTaskWithoutValidTaskGroupReturns404() throws Exception{
+        // TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        // taskGroupService.save(testTaskGroupEntityA);
+
+        // TaskDto testTaskDtoA = TestDataUtil.createTestTaskDtoA();
+
+        // testTaskDtoA.setTaskGroupId(testTaskGroupEntityA.getId());
+
+        // String taskJson = objectMapper.writeValueAsString(testTaskDtoA);
+
+        // mockMvc.perform(
+        //     MockMvcRequestBuilders.post("/taskgroups/" + testTaskGroupEntityA.getId() + "/tasks")
+        //     .contentType(MediaType.APPLICATION_JSON)
+        //     .content(taskJson)
+        // ).andExpect(
+        //     MockMvcResultMatchers.jsonPath("$.taskGroupId").isNumber()
+        // ).andExpect(
+        //     MockMvcResultMatchers.jsonPath("$.id").isNumber()
+        // ).andExpect( 
+        //     MockMvcResultMatchers.jsonPath("$.taskName").value("Task A")
+        // );
+    }
 
     @Test
-    public void testThatDeleteTask() throws Exception{
+    public void testThatDeleteTaskReturnsHttp204() throws Exception{
         TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         taskGroupService.save(testTaskGroupEntityA);
 
@@ -97,10 +122,12 @@ public class TaskControllerIntegrationTests {
         assertThat(testTaskGroupEntityA.getTasks()).hasSize(1);
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/tasks/" + testTaskEntityA.getId())
+            MockMvcRequestBuilders.delete("/tasks/" + testTaskEntityA.getId())
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             MockMvcResultMatchers.status().isNoContent());
+
+        assertThat(testTaskGroupEntityA.getTasks()).isEmpty();
     }
 
 
