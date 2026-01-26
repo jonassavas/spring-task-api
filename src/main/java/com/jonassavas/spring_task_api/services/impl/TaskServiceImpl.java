@@ -29,9 +29,7 @@ public class TaskServiceImpl implements TaskService{
 
         taskGroup.addTask(taskEntity); // Cascade saves task automatically
 
-        taskRepository.save(taskEntity);
-
-        return taskEntity;
+        return taskRepository.save(taskEntity);
     }
 
     @Override
@@ -42,6 +40,13 @@ public class TaskServiceImpl implements TaskService{
         TaskGroupEntity group = task.getTaskGroup();
 
         group.removeTask(task); // Triggers orphanRemoval
+
+        taskRepository.delete(task);
+    }
+
+    @Override
+    public boolean isExist(Long id){
+        return taskRepository.existsById(id);
     }
 
 }

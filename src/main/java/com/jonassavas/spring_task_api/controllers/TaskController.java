@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.mappers.Mapper;
+import com.jonassavas.spring_task_api.services.TaskGroupService;
 import com.jonassavas.spring_task_api.services.TaskService;
 
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,13 @@ public class TaskController {
     
     private Mapper<TaskEntity, TaskDto> taskMapper;
     private TaskService taskService;
+    private TaskGroupService taskGroupService;
 
 
-    public TaskController(Mapper<TaskEntity, TaskDto> taskMapper, TaskService taskService){
+    public TaskController(Mapper<TaskEntity, TaskDto> taskMapper, TaskService taskService, TaskGroupService taskGroupService){
         this.taskMapper = taskMapper;
         this.taskService = taskService;
+        this.taskGroupService = taskGroupService;
     }
     
 
@@ -34,6 +37,11 @@ public class TaskController {
     public ResponseEntity<TaskDto> createTask(
             @PathVariable Long groupId,
             @RequestBody TaskDto dto) {
+
+        // Can't create a task without a valid task group
+        if(!taskGroupService.isExist(groupId)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         
         TaskEntity taskEntity = taskMapper.mapFrom(dto);
         TaskEntity savedTask = taskService.createTask(groupId, taskEntity);

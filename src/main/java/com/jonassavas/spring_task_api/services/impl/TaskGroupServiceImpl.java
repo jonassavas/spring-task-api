@@ -31,4 +31,9 @@ public class TaskGroupServiceImpl implements TaskGroupService{
                                     .spliterator(), false)
                                     .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean isExist(Long id){
+        return taskGroupRepository.existsById(id);
+    }
 }

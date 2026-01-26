@@ -6,4 +6,6 @@ public interface TaskService {
     TaskEntity createTask(Long groupId, TaskEntity taskEntity);
 
     void deleteTask(Long id);
+
+    boolean isExist(Long id);
 }

@@ -8,4 +8,6 @@ public interface TaskGroupService {
     TaskGroupEntity save(TaskGroupEntity taskGroupEntity);
 
     List<TaskGroupEntity> findAll();
+
+    boolean isExist(Long id);
 }

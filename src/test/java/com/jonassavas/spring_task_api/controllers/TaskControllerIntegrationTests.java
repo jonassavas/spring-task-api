@@ -86,30 +86,26 @@ public class TaskControllerIntegrationTests {
         );
     }
     
-    // TODO
     @Test
     public void testThatCreateTaskWithoutValidTaskGroupReturns404() throws Exception{
         // TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         // taskGroupService.save(testTaskGroupEntityA);
 
-        // TaskDto testTaskDtoA = TestDataUtil.createTestTaskDtoA();
+        TaskDto testTaskDtoA = TestDataUtil.createTestTaskDtoA();
 
-        // testTaskDtoA.setTaskGroupId(testTaskGroupEntityA.getId());
+        testTaskDtoA.setTaskGroupId(99L);
 
-        // String taskJson = objectMapper.writeValueAsString(testTaskDtoA);
+        String taskJson = objectMapper.writeValueAsString(testTaskDtoA);
 
-        // mockMvc.perform(
-        //     MockMvcRequestBuilders.post("/taskgroups/" + testTaskGroupEntityA.getId() + "/tasks")
-        //     .contentType(MediaType.APPLICATION_JSON)
-        //     .content(taskJson)
-        // ).andExpect(
-        //     MockMvcResultMatchers.jsonPath("$.taskGroupId").isNumber()
-        // ).andExpect(
-        //     MockMvcResultMatchers.jsonPath("$.id").isNumber()
-        // ).andExpect( 
-        //     MockMvcResultMatchers.jsonPath("$.taskName").value("Task A")
-        // );
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/taskgroups/" + 99 + "/tasks")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(taskJson)
+        ).andExpect(
+            MockMvcResultMatchers.status().isNotFound()
+        );
     }
+
 
     // TODO
     @Test
