@@ -1,5 +1,9 @@
 package com.jonassavas.spring_task_api.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +22,7 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 import com.jonassavas.spring_task_api.services.TaskService;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -107,24 +111,53 @@ public class TaskControllerIntegrationTests {
     }
 
 
-    // TODO
     @Test
+    @Transactional
     public void testThatDeleteTaskReturnsHttp204() throws Exception{
-        // TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
-        // taskGroupService.save(testTaskGroupEntityA);
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
 
-        // TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
-        // taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
 
-        // assertThat(testTaskGroupEntityA.getTasks()).hasSize(1);
+        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(1); 
 
-        // mockMvc.perform(
-        //     MockMvcRequestBuilders.delete("/tasks/" + testTaskEntityA.getId())
-        //     .contentType(MediaType.APPLICATION_JSON)
-        // ).andExpect(
-        //     MockMvcResultMatchers.status().isNoContent());
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/tasks/" + testTaskEntityA.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent());
 
-        // assertThat(testTaskGroupEntityA.getTasks()).isEmpty();
+        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(0); 
+    }
+
+    @Test
+    @Transactional
+    public void testThatDeleteTaskDeletesCorrectTask() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+
+        TaskEntity testTaskEntityB = TestDataUtil.createTestTaskEntityB();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityB);
+
+        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(2);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/tasks/" + testTaskEntityA.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent());
+
+        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(1);
+        
+        List<TaskEntity> result = testTaskGroupEntityA.getTasks();
+        assertThat(result)
+                .extracting(TaskEntity::getId)
+                .containsExactly(testTaskEntityB.getId());
+        
     }
 
 
