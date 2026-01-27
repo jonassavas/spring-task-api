@@ -10,6 +10,8 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TaskGroupServiceImpl implements TaskGroupService{
     
@@ -35,5 +37,11 @@ public class TaskGroupServiceImpl implements TaskGroupService{
     @Override
     public boolean isExist(Long id){
         return taskGroupRepository.existsById(id);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Long id){
+        taskGroupRepository.deleteById(id);
     }
 }

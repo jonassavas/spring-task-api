@@ -10,10 +10,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonassavas.spring_task_api.TestDataUtil;
+import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
+import com.jonassavas.spring_task_api.services.TaskService;
+
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -21,14 +29,19 @@ import com.jonassavas.spring_task_api.services.TaskGroupService;
 public class TaskGroupControllerIntegrationTests {
    
     private TaskGroupService taskGroupService;
+    private TaskService taskService;
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
 
     @Autowired
-    public TaskGroupControllerIntegrationTests(MockMvc mockMvc, TaskGroupService taskGroupService, ObjectMapper objectMapper){
+    public TaskGroupControllerIntegrationTests(MockMvc mockMvc,
+                                            TaskGroupService taskGroupService, 
+                                            TaskService taskService,
+                                            ObjectMapper objectMapper){
         this.mockMvc = mockMvc;
         this.taskGroupService = taskGroupService;
+        this.taskService = taskService;
         this.objectMapper = objectMapper;
     }
 
@@ -88,4 +101,88 @@ public class TaskGroupControllerIntegrationTests {
             MockMvcResultMatchers.jsonPath("$[0].taskGroupName").value("Task Group A")
         );
     }
+
+
+    @Test
+    public void testThatDeleteTaskGroupReturnsHttp204() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        assertThat(taskGroupService.findAll().size()).isEqualTo(1); 
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/taskgroups/" + testTaskGroupEntityA.getId())
+                .contentType(MediaType.APPLICATION_JSON)    
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent()
+        );
+
+        assertThat(taskGroupService.findAll().size()).isEqualTo(0); 
+    }
+    
+
+    @Transactional
+    @Test
+    public void testThatDeleteTaskGroupDeletesCorrectGroup() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+        TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
+        taskGroupService.save(testTaskGroupEntityB);
+        
+
+        assertThat(taskGroupService.findAll().size()).isEqualTo(2); 
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/taskgroups/" + testTaskGroupEntityA.getId())
+                .contentType(MediaType.APPLICATION_JSON)    
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent()
+        );
+
+        List<TaskGroupEntity> result = taskGroupService.findAll();
+        assertThat(result.size()).isEqualTo(1); 
+        assertThat(result)
+                .extracting(TaskGroupEntity::getId)
+                .containsExactly(testTaskGroupEntityB.getId());
+    }
+
+    @Transactional
+    @Test
+    public void testThatDeleteTaskGroupDeletesTasks() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+        TaskEntity testTaskEntityB = TestDataUtil.createTestTaskEntityB();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityB);
+        TaskEntity testTaskEntityC = TestDataUtil.createTestTaskEntityC();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityC);
+
+        List<TaskGroupEntity> result = taskGroupService.findAll();
+        assertThat(result.size()).isEqualTo(1); 
+        assertThat(result.getFirst().getTasks())
+                                    .extracting(TaskEntity::getId)
+                                    .containsExactly(testTaskEntityA.getId(), 
+                                                        testTaskEntityB.getId(), 
+                                                        testTaskEntityC.getId());
+        assertThat(taskService.findAll())
+                                    .extracting(TaskEntity::getId)
+                                    .containsExactly(testTaskEntityA.getId(), 
+                                                        testTaskEntityB.getId(), 
+                                                        testTaskEntityC.getId());
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/taskgroups/" + testTaskGroupEntityA.getId())
+                .contentType(MediaType.APPLICATION_JSON)    
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent()
+        );
+        
+        assertThat(taskGroupService.findAll().size()).isEqualTo(0);
+        assertThat(taskService.findAll().size()).isEqualTo(0);
+    }
+
+    // TODO
+    // One test that deletes one task group and its tasks with another one present
 }

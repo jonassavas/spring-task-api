@@ -1,5 +1,9 @@
 package com.jonassavas.spring_task_api.services.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.stereotype.Service;
 
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
@@ -33,7 +37,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public void deleteTask(Long id){
+    public void delete(Long id){
         TaskEntity task = taskRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Task not found with id " + id));
 
@@ -47,6 +51,14 @@ public class TaskServiceImpl implements TaskService{
     @Override
     public boolean isExist(Long id){
         return taskRepository.existsById(id);
+    }
+
+    @Override
+    public List<TaskEntity> findAll(){
+        return StreamSupport.stream(taskRepository
+                                    .findAll()
+                                    .spliterator(), false)
+                                    .collect(Collectors.toList());
     }
 
 }

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,12 @@ public class TaskGroupController {
     public List<TaskGroupDto> listTaskGroups() {
         List<TaskGroupEntity> taskGroups = taskGroupService.findAll();
         return taskGroups.stream().map(taskGroupMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @DeleteMapping(path = "/taskgroups/{id}")
+    public ResponseEntity deleteTaskGroup(@PathVariable("id") Long id){
+        taskGroupService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

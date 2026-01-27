@@ -10,4 +10,6 @@ public interface TaskGroupService {
     List<TaskGroupEntity> findAll();
 
     boolean isExist(Long id);
+
+    void delete(Long id);
 }
