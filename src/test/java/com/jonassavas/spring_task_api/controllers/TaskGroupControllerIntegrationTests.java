@@ -183,6 +183,54 @@ public class TaskGroupControllerIntegrationTests {
         assertThat(taskService.findAll().size()).isEqualTo(0);
     }
 
-    // TODO
-    // One test that deletes one task group and its tasks with another one present
+
+    @Transactional
+    @Test
+    public void testThatDeleteTaskGroupOnlyDeletesOwnTasks() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+        
+        TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
+        taskGroupService.save(testTaskGroupEntityB);
+       
+        TaskEntity testTaskEntityB = TestDataUtil.createTestTaskEntityB();
+        taskService.createTask(testTaskGroupEntityB.getId(), testTaskEntityB);
+        TaskEntity testTaskEntityC = TestDataUtil.createTestTaskEntityC();
+        taskService.createTask(testTaskGroupEntityB.getId(), testTaskEntityC);
+
+        List<TaskGroupEntity> result = taskGroupService.findAll();
+        assertThat(result.size()).isEqualTo(2); 
+        assertThat(result.get(0).getTasks())
+                                    .extracting(TaskEntity::getId)
+                                    .containsExactly(testTaskEntityA.getId());
+        assertThat(result.get(1).getTasks())
+                                    .extracting(TaskEntity::getId)
+                                    .containsExactly(testTaskEntityB.getId(),
+                                                     testTaskEntityC.getId());
+        assertThat(taskService.findAll())
+                                    .extracting(TaskEntity::getId)
+                                    .containsExactly(testTaskEntityA.getId(), 
+                                                        testTaskEntityB.getId(), 
+                                                        testTaskEntityC.getId());
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/taskgroups/" + testTaskGroupEntityA.getId())
+                .contentType(MediaType.APPLICATION_JSON)    
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent()
+        );
+
+        result = taskGroupService.findAll();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result)
+                .extracting(TaskGroupEntity::getId)
+                .containsExactly(testTaskGroupEntityB.getId());
+        assertThat(result.get(0).getTasks())
+                                    .extracting(TaskEntity::getId)
+                                    .containsExactly(testTaskEntityB.getId(),
+                                                     testTaskEntityC.getId());
+    }
 }
