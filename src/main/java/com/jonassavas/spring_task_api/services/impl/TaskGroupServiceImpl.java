@@ -10,6 +10,7 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -43,5 +44,15 @@ public class TaskGroupServiceImpl implements TaskGroupService{
     @Override
     public void delete(Long id){
         taskGroupRepository.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAllTasks(Long id){
+        TaskGroupEntity taskGroup = taskGroupRepository.findById(id)
+                                    .orElseThrow(() -> new EntityNotFoundException(
+                                        "TaskGroup not found with id " + id));
+
+        taskGroup.getTasks().clear();
     }
 }

@@ -57,4 +57,10 @@ public class TaskGroupController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping(path = "/taskgroups/{groupId}/tasks")
+    public ResponseEntity deleteAllTasks(@PathVariable("groupId") Long groupId){
+        taskGroupService.deleteAllTasks(groupId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
