@@ -18,9 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -61,6 +63,12 @@ public class TaskGroupController {
     public ResponseEntity deleteAllTasks(@PathVariable("groupId") Long groupId){
         taskGroupService.deleteAllTasks(groupId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping(path = "/taskgroups/{id}")
+    public ResponseEntity<CreateTaskGroupDto> updateTaskGroup(@PathVariable Long id, @RequestBody CreateTaskGroupDto dto){
+        TaskGroupEntity updated = taskGroupService.update(id, dto);
+        return new ResponseEntity<>(createTaskGroupMapper.mapTo(updated), HttpStatus.OK);
     }
 
 }

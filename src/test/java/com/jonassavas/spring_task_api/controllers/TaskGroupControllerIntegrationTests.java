@@ -16,6 +16,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonassavas.spring_task_api.TestDataUtil;
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskGroupDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
@@ -232,5 +234,26 @@ public class TaskGroupControllerIntegrationTests {
                                     .extracting(TaskEntity::getId)
                                     .containsExactly(testTaskEntityB.getId(),
                                                      testTaskEntityC.getId());
+    }
+
+
+    @Test
+    public void testThatUpdateTaskGroupReturnsHttp200() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        CreateTaskGroupDto testTaskGroupDtoA = TestDataUtil.createTaskGroupDtoA();
+        testTaskGroupDtoA.setTaskGroupName("UPDATED");
+        String taskGroupJson = objectMapper.writeValueAsString(testTaskGroupDtoA);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/taskgroups/" + testTaskGroupEntityA.getId())
+                .contentType(MediaType.APPLICATION_JSON)   
+                .content(taskGroupJson) 
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskGroupName").value("UPDATED")
+        );
     }
 }

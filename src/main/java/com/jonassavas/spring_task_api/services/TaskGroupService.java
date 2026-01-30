@@ -2,6 +2,7 @@ package com.jonassavas.spring_task_api.services;
 
 import java.util.List;
 
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskGroupDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
 public interface TaskGroupService {
@@ -12,4 +13,8 @@ public interface TaskGroupService {
     boolean isExist(Long id);
 
     void delete(Long id);
+
+    void deleteAllTasks(Long id);
+
+    TaskGroupEntity update(Long id, CreateTaskGroupDto dto);
 }

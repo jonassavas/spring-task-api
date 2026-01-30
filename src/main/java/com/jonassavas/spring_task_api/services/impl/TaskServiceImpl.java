@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
 
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
@@ -59,6 +60,12 @@ public class TaskServiceImpl implements TaskService{
                                     .findAll()
                                     .spliterator(), false)
                                     .collect(Collectors.toList());
+    }
+
+    // TODO
+    @Override
+    public TaskEntity update(Long id, CreateTaskDto dto){
+        return null;
     }
 
 }

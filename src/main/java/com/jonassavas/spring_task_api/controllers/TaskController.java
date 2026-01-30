@@ -1,8 +1,10 @@
 package com.jonassavas.spring_task_api.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.mappers.Mapper;
@@ -12,6 +14,7 @@ import com.jonassavas.spring_task_api.services.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,4 +58,11 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // @PatchMapping(path = "/tasks/{id}")
+    // public ResponseEntity<TaskDto> update(@PathVariable Long id, @RequestBody CreateTaskDto dto){
+    //     TaskEntity updated = taskService.update(id, dto);
+        
+    //     return new ResponseEntity<>(CreateTaskMapper.mapTo());
+
+    // }
 }
