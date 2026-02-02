@@ -14,6 +14,7 @@ import com.jonassavas.spring_task_api.repositories.TaskRepository;
 import com.jonassavas.spring_task_api.services.TaskService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -62,10 +63,34 @@ public class TaskServiceImpl implements TaskService{
                                     .collect(Collectors.toList());
     }
 
-    // TODO
+
     @Override
+    @Transactional
     public TaskEntity update(Long id, CreateTaskDto dto){
-        return null;
+        TaskEntity task = taskRepository.findById(id)
+                            .orElseThrow(() -> new EntityNotFoundException(
+                                "Task not found with id " + id));
+        
+        // Update task name
+        if(dto.getTaskName() != null){
+            task.setTaskName(dto.getTaskName());
+        }
+
+        // Move task to another group (if requested)
+        if(dto.getTaskGroupId() != null &&
+            !dto.getTaskGroupId().equals(task.getTaskGroup().getId())){
+                TaskGroupEntity oldGroup = task.getTaskGroup();
+
+                TaskGroupEntity newGroup = taskGroupRepository
+                                            .findById(dto.getTaskGroupId())
+                                            .orElseThrow(() -> new EntityNotFoundException(
+                                                "TaskGroup not found with id " + dto.getTaskGroupId()));
+                
+                oldGroup.removeTask(task);
+                newGroup.addTask(task);
+            }
+        
+        return task;
     }
 
 }

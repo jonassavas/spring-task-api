@@ -1,11 +1,18 @@
 package com.jonassavas.spring_task_api;
 
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
 import com.jonassavas.spring_task_api.domain.dto.CreateTaskGroupDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
 public class TestDataUtil {
+
+    public static CreateTaskDto createTestCreateTaskDto(){
+        return CreateTaskDto.builder()
+                            .taskName("Create Task Dto")
+                            .build();
+    }
 
     public static TaskDto createTestTaskDtoA(){
         return TaskDto.builder()

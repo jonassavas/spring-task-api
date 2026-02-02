@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateTaskDto {
+    private Long taskGroupId;
     private String taskName;
 }

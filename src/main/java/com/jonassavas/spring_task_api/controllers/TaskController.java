@@ -25,14 +25,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class TaskController {
     
     private Mapper<TaskEntity, TaskDto> taskMapper;
+    private Mapper<TaskEntity, CreateTaskDto> createTaskMapper;
     private TaskService taskService;
     private TaskGroupService taskGroupService;
 
 
-    public TaskController(Mapper<TaskEntity, TaskDto> taskMapper, TaskService taskService, TaskGroupService taskGroupService){
+    public TaskController(Mapper<TaskEntity, TaskDto> taskMapper, 
+                        TaskService taskService, 
+                        TaskGroupService taskGroupService,
+                        Mapper<TaskEntity, CreateTaskDto> createTaskMapper){
         this.taskMapper = taskMapper;
         this.taskService = taskService;
         this.taskGroupService = taskGroupService;
+        this.createTaskMapper = createTaskMapper;
     }
     
 
@@ -58,11 +63,10 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // @PatchMapping(path = "/tasks/{id}")
-    // public ResponseEntity<TaskDto> update(@PathVariable Long id, @RequestBody CreateTaskDto dto){
-    //     TaskEntity updated = taskService.update(id, dto);
+    @PatchMapping(path = "/tasks/{id}")
+    public ResponseEntity<CreateTaskDto> update(@PathVariable Long id, @RequestBody CreateTaskDto dto){
+        TaskEntity updated = taskService.update(id, dto);
         
-    //     return new ResponseEntity<>(CreateTaskMapper.mapTo());
-
-    // }
+        return new ResponseEntity<>(createTaskMapper.mapTo(updated), HttpStatus.OK);
+    }
 }

@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonassavas.spring_task_api.TestDataUtil;
+import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
@@ -160,5 +161,90 @@ public class TaskControllerIntegrationTests {
         
     }
 
+    // TODO
+    // - Update task: Task name, task group, & both
 
+    @Test
+    @Transactional
+    public void testUpdateTaskName() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+
+        CreateTaskDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
+        testCreateTaskDto.setTaskName("UPDATED");
+
+        String taskJson = objectMapper.writeValueAsString(testCreateTaskDto);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/tasks/" + testTaskEntityA.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(taskJson)
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskName").value("UPDATED")
+        );
+    }
+
+    @Test
+    @Transactional
+    public void testUpdateTaskGroupId() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+
+        TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
+        taskGroupService.save(testTaskGroupEntityB);
+
+        CreateTaskDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
+        testCreateTaskDto.setTaskGroupId(testTaskGroupEntityB.getId());
+
+        String taskJson = objectMapper.writeValueAsString(testCreateTaskDto);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/tasks/" + testTaskEntityA.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(taskJson)
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskGroupId").value(testTaskGroupEntityB.getId())
+        );
+    }
+
+    @Test
+    @Transactional
+    public void testUpdateBothTaskGroupIdAndTaskName() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+
+        TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
+        taskGroupService.save(testTaskGroupEntityB);
+
+        CreateTaskDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
+        testCreateTaskDto.setTaskGroupId(testTaskGroupEntityB.getId());
+        testCreateTaskDto.setTaskName("UPDATED");
+
+        String taskJson = objectMapper.writeValueAsString(testCreateTaskDto);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/tasks/" + testTaskEntityA.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(taskJson)
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskGroupId").value(testTaskGroupEntityB.getId())
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskName").value("UPDATED")
+        );
+    }
 }
