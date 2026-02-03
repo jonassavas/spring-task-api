@@ -161,8 +161,6 @@ public class TaskControllerIntegrationTests {
         
     }
 
-    // TODO
-    // - Update task: Task name, task group, & both
 
     @Test
     @Transactional

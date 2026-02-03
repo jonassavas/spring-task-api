@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jonassavas.spring_task_api.domain.dto.CreateTaskGroupDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskGroupDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskGroupWithTasksDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.mappers.Mapper;
@@ -47,11 +48,37 @@ public class TaskGroupController {
         return new ResponseEntity<>(createTaskGroupMapper.mapTo(savedTaskGroupEntity), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/taskgroups")
+    @GetMapping("/taskgroups")
     public List<TaskGroupDto> listTaskGroups() {
-        List<TaskGroupEntity> taskGroups = taskGroupService.findAll();
-        return taskGroups.stream().map(taskGroupMapper::mapTo).collect(Collectors.toList());
+        return taskGroupService.findAll()
+            .stream()
+            .map(taskGroupMapper::mapTo)
+            .toList();
     }
+
+    // @GetMapping("/taskgroups/{id}/tasks")
+    // public List<TaskDto> listTasksForGroup(@PathVariable Long id) {
+    //     return taskService.findByGroupId(id)
+    //         .stream()
+    //         .map(taskMapper::mapTo)
+    //         .toList();
+    // }
+
+    // @GetMapping("/taskgroups/with-tasks")
+    //     public List<TaskGroupWithTasksDto> listTaskGroupsWithTasks() {
+    //         return taskGroupService.findAllWithTasks()
+    //             .stream()
+    //             .map(taskGroupWithTasksMapper::mapTo)
+    //             .toList();
+    //     }
+
+
+
+    // @GetMapping(path = "/taskgroups")
+    // public List<TaskGroupDto> listTaskGroups() {
+    //     List<TaskGroupEntity> taskGroups = taskGroupService.findAll();
+    //     return taskGroups.stream().map(taskGroupMapper::mapTo).collect(Collectors.toList());
+    // }
 
     @DeleteMapping(path = "/taskgroups/{id}")
     public ResponseEntity deleteTaskGroup(@PathVariable("id") Long id){

@@ -18,5 +18,4 @@ public class TaskGroupDto {
 
     private String taskGroupName;
 
-    private List<TaskEntity> tasks;
 }

@@ -261,4 +261,31 @@ public class TaskGroupControllerIntegrationTests {
     // - Update task group name etc
     // - DELETE all tasks
     // - 
+
+    @Test
+    //@Transactional
+    public void testThatDeleteAllTasksDeletesCorrespondingTasks() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+        TaskEntity testTaskEntityB = TestDataUtil.createTestTaskEntityB();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityB);
+
+
+        TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
+        taskGroupService.save(testTaskGroupEntityB);
+        TaskEntity testTaskEntityC = TestDataUtil.createTestTaskEntityB();
+        taskService.createTask(testTaskGroupEntityB.getId(), testTaskEntityC);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/taskgroups/" + testTaskGroupEntityA.getId() + "/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            MockMvcResultMatchers.status().isNoContent()
+        );
+        
+        List<TaskEntity> result = taskService.findAll();
+        assertThat(result).extracting(TaskEntity::getId).containsExactly(testTaskEntityC.getId());
+    }
 }

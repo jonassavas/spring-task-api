@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
 
-import com.jonassavas.spring_task_api.domain.dto.CreateTaskGroupDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskGroupRequestDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
@@ -37,6 +37,18 @@ public class TaskGroupServiceImpl implements TaskGroupService{
     }
 
     @Override
+    public List<TaskGroupEntity> findAllWithTasks(){
+        return taskGroupRepository.findAllWithTasks();
+    }
+
+    @Override
+    public TaskGroupEntity findByIdWithTasks(Long id){
+        return taskGroupRepository.findByIdWithTasks(id)
+            .orElseThrow(() -> new EntityNotFoundException(
+                "TaskGroup not found with id " + id));
+    }
+
+    @Override
     public boolean isExist(Long id){
         return taskGroupRepository.existsById(id);
     }
@@ -59,7 +71,7 @@ public class TaskGroupServiceImpl implements TaskGroupService{
 
     @Transactional
     @Override
-    public TaskGroupEntity update(Long id, CreateTaskGroupDto dto){
+    public TaskGroupEntity update(Long id, TaskGroupRequestDto dto){
         TaskGroupEntity taskGroup = taskGroupRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(
                                         "TaskGroup not found with it: " + id));
