@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonassavas.spring_task_api.TestDataUtil;
-import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
@@ -178,7 +178,7 @@ public class TaskControllerIntegrationTests {
         TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
         taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
 
-        CreateTaskDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
+        TaskRequestDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
         testCreateTaskDto.setTaskName("UPDATED");
 
         String taskJson = objectMapper.writeValueAsString(testCreateTaskDto);
@@ -205,7 +205,7 @@ public class TaskControllerIntegrationTests {
         TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
         taskGroupService.save(testTaskGroupEntityB);
 
-        CreateTaskDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
+        TaskRequestDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
         testCreateTaskDto.setTaskGroupId(testTaskGroupEntityB.getId());
 
         String taskJson = objectMapper.writeValueAsString(testCreateTaskDto);
@@ -232,7 +232,7 @@ public class TaskControllerIntegrationTests {
         TaskGroupEntity testTaskGroupEntityB = TestDataUtil.createTaskGroupEntityB();
         taskGroupService.save(testTaskGroupEntityB);
 
-        CreateTaskDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
+        TaskRequestDto testCreateTaskDto = TestDataUtil.createTestCreateTaskDto();
         testCreateTaskDto.setTaskGroupId(testTaskGroupEntityB.getId());
         testCreateTaskDto.setTaskName("UPDATED");
 

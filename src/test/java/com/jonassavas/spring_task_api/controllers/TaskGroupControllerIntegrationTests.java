@@ -250,10 +250,38 @@ public class TaskGroupControllerIntegrationTests {
         );
     }
 
-    // TODO 
-    // - Update task group name etc
-    // - DELETE all tasks
-    // - 
+
+    @Test
+    public void testThatUpdateTaskGroupKeepsItsTasks() throws Exception{
+        TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
+        taskGroupService.save(testTaskGroupEntityA);
+
+        TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
+        taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
+
+        assertThat(taskGroupService.findByIdWithTasks(testTaskGroupEntityA.getId()).getTasks())
+                            .extracting(TaskEntity::getId)
+                            .containsExactly(testTaskEntityA.getId());
+
+        TaskGroupRequestDto testTaskGroupDtoA = TestDataUtil.createTaskGroupDtoA();
+        testTaskGroupDtoA.setTaskGroupName("UPDATED");
+        String taskGroupJson = objectMapper.writeValueAsString(testTaskGroupDtoA);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/taskgroups/" + testTaskGroupEntityA.getId())
+                .contentType(MediaType.APPLICATION_JSON)   
+                .content(taskGroupJson) 
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.taskGroupName").value("UPDATED")
+        );
+
+        assertThat(taskGroupService.findByIdWithTasks(testTaskGroupEntityA.getId()).getTasks())
+                            .extracting(TaskEntity::getId)
+                            .containsExactly(testTaskEntityA.getId());
+    }
+
 
     @Test
     public void testThatDeleteAllTasksDeletesCorrespondingTasks() throws Exception{

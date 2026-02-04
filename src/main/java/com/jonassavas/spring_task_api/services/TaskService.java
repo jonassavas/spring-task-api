@@ -2,7 +2,7 @@ package com.jonassavas.spring_task_api.services;
 
 import java.util.List;
 
-import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskRequestDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 
 public interface TaskService {
@@ -12,7 +12,7 @@ public interface TaskService {
 
     boolean isExist(Long id);
 
-    TaskEntity update(Long id, CreateTaskDto dto);
+    TaskEntity update(Long id, TaskRequestDto dto);
 
     List<TaskEntity> findAll();
 }

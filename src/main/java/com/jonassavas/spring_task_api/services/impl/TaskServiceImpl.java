@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
 
-import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskRequestDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
@@ -66,7 +66,7 @@ public class TaskServiceImpl implements TaskService{
 
 
     @Override
-    public TaskEntity update(Long id, CreateTaskDto dto){
+    public TaskEntity update(Long id, TaskRequestDto dto){
         TaskEntity task = taskRepository.findById(id)
                             .orElseThrow(() -> new EntityNotFoundException(
                                 "Task not found with id " + id));

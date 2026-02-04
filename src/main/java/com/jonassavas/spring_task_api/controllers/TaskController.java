@@ -1,10 +1,8 @@
 package com.jonassavas.spring_task_api.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jonassavas.spring_task_api.domain.dto.CreateTaskDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.mappers.Mapper;
@@ -25,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class TaskController {
     
     private Mapper<TaskEntity, TaskDto> taskMapper;
-    private Mapper<TaskEntity, CreateTaskDto> createTaskMapper;
+    private Mapper<TaskEntity, TaskRequestDto> taskRequestMapper;
     private TaskService taskService;
     private TaskGroupService taskGroupService;
 
@@ -33,11 +31,11 @@ public class TaskController {
     public TaskController(Mapper<TaskEntity, TaskDto> taskMapper, 
                         TaskService taskService, 
                         TaskGroupService taskGroupService,
-                        Mapper<TaskEntity, CreateTaskDto> createTaskMapper){
+                        Mapper<TaskEntity, TaskRequestDto> taskRequestMapper){
         this.taskMapper = taskMapper;
         this.taskService = taskService;
         this.taskGroupService = taskGroupService;
-        this.createTaskMapper = createTaskMapper;
+        this.taskRequestMapper = taskRequestMapper;
     }
     
 
@@ -64,9 +62,9 @@ public class TaskController {
     }
 
     @PatchMapping(path = "/tasks/{id}")
-    public ResponseEntity<CreateTaskDto> update(@PathVariable Long id, @RequestBody CreateTaskDto dto){
+    public ResponseEntity<TaskRequestDto> update(@PathVariable Long id, @RequestBody TaskRequestDto dto){
         TaskEntity updated = taskService.update(id, dto);
         
-        return new ResponseEntity<>(createTaskMapper.mapTo(updated), HttpStatus.OK);
+        return new ResponseEntity<>(taskRequestMapper.mapTo(updated), HttpStatus.OK);
     }
 }
