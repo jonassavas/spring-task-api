@@ -1,10 +1,18 @@
 package com.jonassavas.spring_task_api;
 
+import com.jonassavas.spring_task_api.domain.dto.TaskRequestDto;
+import com.jonassavas.spring_task_api.domain.dto.TaskGroupRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.TaskDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
 public class TestDataUtil {
+
+    public static TaskRequestDto createTestCreateTaskDto(){
+        return TaskRequestDto.builder()
+                            .taskName("Create Task Dto")
+                            .build();
+    }
 
     public static TaskDto createTestTaskDtoA(){
         return TaskDto.builder()
@@ -48,6 +56,24 @@ public class TestDataUtil {
 
     public static TaskGroupEntity createTaskGroupEntityC(){
         return TaskGroupEntity.builder()
+                                .taskGroupName("Task Group C")
+                                .build();
+    }
+
+    public static TaskGroupRequestDto createTaskGroupDtoA(){
+        return TaskGroupRequestDto.builder()
+                                .taskGroupName("Task Group A")
+                                .build();
+    }
+
+    public static TaskGroupRequestDto createTaskGroupDtoB(){
+        return TaskGroupRequestDto.builder()
+                                .taskGroupName("Task Group B")
+                                .build();
+    }
+
+    public static TaskGroupRequestDto createTaskGroupDtoC(){
+        return TaskGroupRequestDto.builder()
                                 .taskGroupName("Task Group C")
                                 .build();
     }

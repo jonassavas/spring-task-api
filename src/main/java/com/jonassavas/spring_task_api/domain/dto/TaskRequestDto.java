@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TaskGroupDto {
-    private Long id;
-
-    private String taskGroupName;
-
+public class TaskRequestDto {
+    private Long taskGroupId;
+    private String taskName;
 }

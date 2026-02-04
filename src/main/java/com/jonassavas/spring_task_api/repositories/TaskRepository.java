@@ -1,5 +1,6 @@
 package com.jonassavas.spring_task_api.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,6 @@ import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 which is used to indicate that the class provides the mechanism for storage, 
 retrieval, update, delete, and search operation on objects.*/
 @Repository 
-public interface TaskRepository extends CrudRepository<TaskEntity, Long> {
+public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
     
 }
