@@ -23,7 +23,6 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 import com.jonassavas.spring_task_api.services.TaskService;
 
-import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -113,7 +112,6 @@ public class TaskControllerIntegrationTests {
 
 
     @Test
-    @Transactional
     public void testThatDeleteTaskReturnsHttp204() throws Exception{
         TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         taskGroupService.save(testTaskGroupEntityA);
@@ -121,7 +119,10 @@ public class TaskControllerIntegrationTests {
         TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA();
         taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityA);
 
-        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(1); 
+        assertThat(taskGroupService
+                    .findByIdWithTasks(testTaskGroupEntityA.getId())
+                        .getTasks().size())
+                .isEqualTo(1); 
 
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/tasks/" + testTaskEntityA.getId())
@@ -129,11 +130,13 @@ public class TaskControllerIntegrationTests {
         ).andExpect(
             MockMvcResultMatchers.status().isNoContent());
 
-        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(0); 
+        assertThat(taskGroupService
+                    .findByIdWithTasks(testTaskGroupEntityA.getId())
+                        .getTasks().size())
+                .isEqualTo(0); 
     }
 
     @Test
-    @Transactional
     public void testThatDeleteTaskDeletesCorrectTask() throws Exception{
         TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         taskGroupService.save(testTaskGroupEntityA);
@@ -144,17 +147,22 @@ public class TaskControllerIntegrationTests {
         TaskEntity testTaskEntityB = TestDataUtil.createTestTaskEntityB();
         taskService.createTask(testTaskGroupEntityA.getId(), testTaskEntityB);
 
-        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(2);
+        assertThat(taskGroupService
+                    .findByIdWithTasks(testTaskGroupEntityA.getId())
+                        .getTasks().size())
+                .isEqualTo(2); 
 
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/tasks/" + testTaskEntityA.getId())
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
             MockMvcResultMatchers.status().isNoContent());
-
-        assertThat(testTaskGroupEntityA.getTasks().size()).isEqualTo(1);
         
-        List<TaskEntity> result = testTaskGroupEntityA.getTasks();
+        List<TaskEntity> result = taskGroupService
+                                    .findByIdWithTasks(testTaskGroupEntityA.getId())
+                                        .getTasks();
+
+        assertThat(result.size()).isEqualTo(1);
         assertThat(result)
                 .extracting(TaskEntity::getId)
                 .containsExactly(testTaskEntityB.getId());
@@ -163,7 +171,6 @@ public class TaskControllerIntegrationTests {
 
 
     @Test
-    @Transactional
     public void testUpdateTaskName() throws Exception{
         TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         taskGroupService.save(testTaskGroupEntityA);
@@ -188,7 +195,6 @@ public class TaskControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testUpdateTaskGroupId() throws Exception{
         TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         taskGroupService.save(testTaskGroupEntityA);
@@ -216,7 +222,6 @@ public class TaskControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testUpdateBothTaskGroupIdAndTaskName() throws Exception{
         TaskGroupEntity testTaskGroupEntityA = TestDataUtil.createTaskGroupEntityA();
         taskGroupService.save(testTaskGroupEntityA);

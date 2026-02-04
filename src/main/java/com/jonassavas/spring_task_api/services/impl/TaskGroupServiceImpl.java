@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class TaskGroupServiceImpl implements TaskGroupService{
     
     private TaskGroupRepository taskGroupRepository;
@@ -53,13 +54,11 @@ public class TaskGroupServiceImpl implements TaskGroupService{
         return taskGroupRepository.existsById(id);
     }
 
-    @Transactional
     @Override
     public void delete(Long id){
         taskGroupRepository.deleteById(id);
     }
-
-    @Transactional
+ 
     @Override
     public void deleteAllTasks(Long id){
         TaskGroupEntity taskGroup = taskGroupRepository.findById(id)
@@ -69,7 +68,6 @@ public class TaskGroupServiceImpl implements TaskGroupService{
         taskGroup.getTasks().clear();
     }
 
-    @Transactional
     @Override
     public TaskGroupEntity update(Long id, TaskGroupRequestDto dto){
         TaskGroupEntity taskGroup = taskGroupRepository.findById(id)

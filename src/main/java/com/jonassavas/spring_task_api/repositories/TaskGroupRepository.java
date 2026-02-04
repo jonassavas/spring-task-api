@@ -3,6 +3,7 @@ package com.jonassavas.spring_task_api.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,7 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 which is used to indicate that the class provides the mechanism for storage, 
 retrieval, update, delete, and search operation on objects.*/
 @Repository 
-public interface TaskGroupRepository extends CrudRepository<TaskGroupEntity, Long>{
+public interface TaskGroupRepository extends JpaRepository<TaskGroupEntity, Long>{
     
     @Query("""
         SELECT tg FROM TaskGroupEntity tg

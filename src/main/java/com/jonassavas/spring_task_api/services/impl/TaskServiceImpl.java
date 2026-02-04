@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class TaskServiceImpl implements TaskService{
     private final TaskRepository taskRepository;
     private final TaskGroupRepository taskGroupRepository;
@@ -65,7 +66,6 @@ public class TaskServiceImpl implements TaskService{
 
 
     @Override
-    @Transactional
     public TaskEntity update(Long id, CreateTaskDto dto){
         TaskEntity task = taskRepository.findById(id)
                             .orElseThrow(() -> new EntityNotFoundException(
