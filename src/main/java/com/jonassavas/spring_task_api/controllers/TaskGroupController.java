@@ -44,14 +44,14 @@ public class TaskGroupController {
         this.taskGroupWithTasksMapper = taskGroupWithTasksMapper;
     }
 
-    @PostMapping(path = "/taskgroups")
+    @PostMapping(path = "/boards/{boardId}/groups")
     public ResponseEntity<TaskGroupRequestDto> createTaskGroup(@RequestBody TaskGroupRequestDto taskGroup) {
         TaskGroupEntity taskGroupEntity = taskGroupRequestMapper.mapFrom(taskGroup);
         TaskGroupEntity savedTaskGroupEntity = taskGroupService.save(taskGroupEntity);
         return new ResponseEntity<>(taskGroupRequestMapper.mapTo(savedTaskGroupEntity), HttpStatus.CREATED);
     }
 
-    @GetMapping("/taskgroups")
+    @GetMapping("/boards/{boardId}/groups")
     public List<TaskGroupDto> listTaskGroups() {
         return taskGroupService.findAll()
             .stream()
@@ -67,7 +67,7 @@ public class TaskGroupController {
     //         .toList();
     // }
 
-    @GetMapping("/taskgroups/with-tasks")
+    @GetMapping("/boards/{boardId}/groups/with-tasks")
         public List<TaskGroupWithTasksDto> listTaskGroupsWithTasks() {
             return taskGroupService.findAllWithTasks()
                 .stream()
@@ -83,20 +83,20 @@ public class TaskGroupController {
     //     return taskGroups.stream().map(taskGroupMapper::mapTo).collect(Collectors.toList());
     // }
 
-    @DeleteMapping(path = "/taskgroups/{id}")
-    public ResponseEntity deleteTaskGroup(@PathVariable("id") Long id){
+    @DeleteMapping(path = "/boards/{boardId}/groups/{groupId}")
+    public ResponseEntity deleteTaskGroup(@PathVariable("groupId") Long id){
         taskGroupService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(path = "/taskgroups/{groupId}/tasks")
+    @DeleteMapping(path = "/boards/{boardId}/groups/{groupId}/tasks")
     public ResponseEntity deleteAllTasks(@PathVariable("groupId") Long groupId){
         taskGroupService.deleteAllTasks(groupId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping(path = "/taskgroups/{id}")
-    public ResponseEntity<TaskGroupRequestDto> updateTaskGroup(@PathVariable Long id, @RequestBody TaskGroupRequestDto dto){
+    @PatchMapping(path = "board/{boardId}/groups/{groupId}")
+    public ResponseEntity<TaskGroupRequestDto> updateTaskGroup(@PathVariable("groupId") Long id, @RequestBody TaskGroupRequestDto dto){
         TaskGroupEntity updated = taskGroupService.update(id, dto);
         return new ResponseEntity<>(taskGroupRequestMapper.mapTo(updated), HttpStatus.OK);
     }
