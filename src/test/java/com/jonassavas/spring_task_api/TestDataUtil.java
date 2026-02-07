@@ -8,9 +8,10 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
 public class TestDataUtil {
 
-    public static TaskRequestDto createTestCreateTaskDto(){
+    public static TaskRequestDto createTestCreateTaskDto(TaskGroupEntity taskGroup){
         return TaskRequestDto.builder()
                             .taskName("Create Task Dto")
+                            .taskGroupId(taskGroup.getId())
                             .build();
     }
 

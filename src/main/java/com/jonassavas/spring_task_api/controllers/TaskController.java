@@ -39,7 +39,7 @@ public class TaskController {
     }
     
 
-    @PostMapping("/taskgroups/{groupId}/tasks")
+    @PostMapping("/groups/{groupId}/tasks")
     public ResponseEntity<TaskDto> createTask(
             @PathVariable Long groupId,
             @RequestBody TaskDto dto) {
@@ -55,13 +55,13 @@ public class TaskController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(path = "/tasks/{id}")
-    public ResponseEntity deleteTask(@PathVariable("id") Long id){
+    @DeleteMapping(path = "/tasks/{taskId}")
+    public ResponseEntity deleteTask(@PathVariable("taskId") Long id){
         taskService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping(path = "/tasks/{id}")
+    @PatchMapping(path = "/tasks/{taskId}")
     public ResponseEntity<TaskRequestDto> update(@PathVariable Long id, @RequestBody TaskRequestDto dto){
         TaskEntity updated = taskService.update(id, dto);
         

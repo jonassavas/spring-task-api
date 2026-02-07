@@ -30,7 +30,7 @@ public class TaskEntity {
     private String taskName;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "group_id") // Maybe change the nullable for initial tests (, nullable = false) Add nullable later
+    @JoinColumn(name = "group_id", nullable = false) // Maybe change the nullable for initial tests (, nullable = false) Add nullable later
     @JsonBackReference
     private TaskGroupEntity taskGroup;
 }
