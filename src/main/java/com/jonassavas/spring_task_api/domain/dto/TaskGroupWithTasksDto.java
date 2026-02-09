@@ -19,4 +19,6 @@ public class TaskGroupWithTasksDto {
     private String taskGroupName;
 
     private List<TaskDto> tasks;
+
+    private Long taskBoardId;
 }
