@@ -2,13 +2,16 @@ package com.jonassavas.spring_task_api.repositories;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.jonassavas.spring_task_api.TestDataUtil;
+import com.jonassavas.spring_task_api.domain.entities.TaskBoardEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
+import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,14 +21,30 @@ public class TaskEntityRepositoryIntegrationTest {
     
     private TaskRepository underTest;
 
+    private TaskBoardRepository taskBoardRepository;
+    private TaskGroupRepository taskGroupRepository;
+
+    private TaskBoardEntity testTaskBoard;
+    private TaskGroupEntity testTaskGroup;
+
+    // TODO
+    @BeforeEach
+    public void setUp(){
+        //taskBoard = 
+    }
+
     @Autowired
-    public TaskEntityRepositoryIntegrationTest(TaskRepository underTest){
+    public TaskEntityRepositoryIntegrationTest(TaskRepository underTest, 
+                                            TaskBoardRepository taskBoardRepository, 
+                                            TaskGroupRepository taskGroupRepository){
         this.underTest = underTest;
+        this.taskBoardRepository = taskBoardRepository;
+        this.taskGroupRepository = taskGroupRepository;
     }
 
     @Test
     public void testThatTaskCanBeCreatedAndRecalled(){
-        TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA();
+        TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA(testTaskBoard);
         underTest.save(testTaskA);
         Optional<TaskEntity> result = underTest.findById(1L);
         assertThat(result).isPresent();

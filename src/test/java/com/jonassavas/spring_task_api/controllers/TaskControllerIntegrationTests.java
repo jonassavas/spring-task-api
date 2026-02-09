@@ -35,6 +35,8 @@ public class TaskControllerIntegrationTests {
 
     private ObjectMapper objectMapper;
 
+    // Create taskBoard here, to be used in the tests
+
     @Autowired
     public TaskControllerIntegrationTests(TaskService taskService, 
                                           TaskGroupService taskGroupService, 
