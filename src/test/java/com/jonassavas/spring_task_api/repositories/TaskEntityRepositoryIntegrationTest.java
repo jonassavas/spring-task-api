@@ -24,13 +24,17 @@ public class TaskEntityRepositoryIntegrationTest {
     private TaskBoardRepository taskBoardRepository;
     private TaskGroupRepository taskGroupRepository;
 
-    private TaskBoardEntity testTaskBoard;
-    private TaskGroupEntity testTaskGroup;
+    private TaskBoardEntity taskBoard; 
+    private TaskGroupEntity taskGroup; 
 
-    // TODO
     @BeforeEach
     public void setUp(){
-        //taskBoard = 
+        taskBoard = taskBoardRepository.save(
+            TestDataUtil.createTestTaskBoardEntityA()
+        );
+        taskGroup = taskGroupRepository.save(
+            TestDataUtil.createTaskGroupEntityA(taskBoard)
+        );
     }
 
     @Autowired
@@ -44,7 +48,7 @@ public class TaskEntityRepositoryIntegrationTest {
 
     @Test
     public void testThatTaskCanBeCreatedAndRecalled(){
-        TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA(testTaskBoard);
+        TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(testTaskA);
         Optional<TaskEntity> result = underTest.findById(1L);
         assertThat(result).isPresent();
@@ -53,11 +57,11 @@ public class TaskEntityRepositoryIntegrationTest {
 
     @Test
     public void testThatMultipleTasksCanBeCreatedAndRecalled(){
-        TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA();
+        TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(testTaskA);
-        TaskEntity testTaskB = TestDataUtil.createTestTaskEntityB();
+        TaskEntity testTaskB = TestDataUtil.createTestTaskEntityB(taskGroup);
         underTest.save(testTaskB);
-        TaskEntity testTaskC = TestDataUtil.createTestTaskEntityC();
+        TaskEntity testTaskC = TestDataUtil.createTestTaskEntityC(taskGroup);
         underTest.save(testTaskC);
 
         Iterable<TaskEntity> result = underTest.findAll();
@@ -68,7 +72,7 @@ public class TaskEntityRepositoryIntegrationTest {
 
     @Test
     public void testThatTaskCanBeUpdated(){
-        TaskEntity taskEntityA = TestDataUtil.createTestTaskEntityA();
+        TaskEntity taskEntityA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(taskEntityA);
         taskEntityA.setTaskName("UPDATED");
         underTest.save(taskEntityA);
@@ -80,7 +84,7 @@ public class TaskEntityRepositoryIntegrationTest {
 
     @Test
     public void testThatTaskCanBeDeleted(){
-        TaskEntity taskEntityA = TestDataUtil.createTestTaskEntityA();
+        TaskEntity taskEntityA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(taskEntityA);
 
         underTest.deleteById(taskEntityA.getId());
