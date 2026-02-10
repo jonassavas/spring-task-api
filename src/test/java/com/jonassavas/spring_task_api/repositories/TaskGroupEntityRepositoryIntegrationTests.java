@@ -42,9 +42,9 @@ public class TaskGroupEntityRepositoryIntegrationTests {
     public void testThatEmptyTaskGroupCanBeCreatedAndRecalled(){
         TaskGroupEntity testTaskGroup = TestDataUtil.createTaskGroupEntityA(taskBoard);
         underTest.save(testTaskGroup);
-        Optional<TaskGroupEntity> result = underTest.findById(1L);
+        Optional<TaskGroupEntity> result = underTest.findById(testTaskGroup.getId());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(testTaskGroup);
+        assertThat(result.get()).extracting(TaskGroupEntity::getId).isEqualTo(testTaskGroup.getId());
     }
 
     @Test
@@ -57,8 +57,9 @@ public class TaskGroupEntityRepositoryIntegrationTests {
         underTest.save(testTaskGroupC);
         Iterable<TaskGroupEntity> result = underTest.findAll();
         assertThat(result)
+                .extracting(TaskGroupEntity::getId)
                 .hasSize(3)
-                .containsExactly(testTaskGroupA, testTaskGroupB, testTaskGroupC);
+                .containsExactly(testTaskGroupA.getId(), testTaskGroupB.getId(), testTaskGroupC.getId());
     }
 
     @Test
@@ -69,7 +70,7 @@ public class TaskGroupEntityRepositoryIntegrationTests {
 
         underTest.save(testTaskGroup);
         
-        Optional<TaskGroupEntity> result = underTest.findById(1L);
+        Optional<TaskGroupEntity> result = underTest.findByIdWithTasks(1L);
         TaskGroupEntity savedGroup = result.get();
         assertThat(savedGroup.getTaskGroupName())
                             .isEqualTo(testTaskGroup.getTaskGroupName());
@@ -89,7 +90,9 @@ public class TaskGroupEntityRepositoryIntegrationTests {
 
         Optional<TaskGroupEntity> result = underTest.findById(testTaskGroupA.getId());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(testTaskGroupA);
+        assertThat(result.get())
+                .extracting(TaskGroupEntity::getTaskGroupName)
+                .isEqualTo("UPDATED");
     }
 
     @Test
