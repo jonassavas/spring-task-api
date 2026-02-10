@@ -9,6 +9,8 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
 public class TestDataUtil {
 
+    //TODO
+    // This class is incredibly cluttered. Separate it into different classes for each entity/dto
 
     public static TaskBoardEntity createTestTaskBoardEntityA(){
         // This will require a user at some point
@@ -17,7 +19,7 @@ public class TestDataUtil {
                                 .build();
     }
 
-    public static TaskRequestDto createTestCreateTaskDto(TaskGroupEntity taskGroup){
+    public static TaskRequestDto createTestRequestTaskDto(TaskGroupEntity taskGroup){
         return TaskRequestDto.builder()
                             .taskName("Create Task Dto")
                             .taskGroupId(taskGroup.getId())

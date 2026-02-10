@@ -62,7 +62,7 @@ public class TaskController {
     }
 
     @PatchMapping(path = "/tasks/{taskId}")
-    public ResponseEntity<TaskRequestDto> update(@PathVariable Long id, @RequestBody TaskRequestDto dto){
+    public ResponseEntity<TaskRequestDto> update(@PathVariable("taskId") Long id, @RequestBody TaskRequestDto dto){
         TaskEntity updated = taskService.update(id, dto);
         
         return new ResponseEntity<>(taskRequestMapper.mapTo(updated), HttpStatus.OK);
