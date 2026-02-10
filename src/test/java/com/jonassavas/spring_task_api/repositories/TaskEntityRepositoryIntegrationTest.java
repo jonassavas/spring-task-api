@@ -13,6 +13,8 @@ import com.jonassavas.spring_task_api.domain.entities.TaskBoardEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
+import jakarta.transaction.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -47,6 +49,7 @@ public class TaskEntityRepositoryIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testThatTaskCanBeCreatedAndRecalled(){
         TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(testTaskA);
@@ -56,6 +59,7 @@ public class TaskEntityRepositoryIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testThatMultipleTasksCanBeCreatedAndRecalled(){
         TaskEntity testTaskA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(testTaskA);
@@ -71,6 +75,7 @@ public class TaskEntityRepositoryIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testThatTaskCanBeUpdated(){
         TaskEntity taskEntityA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(taskEntityA);
@@ -83,6 +88,7 @@ public class TaskEntityRepositoryIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testThatTaskCanBeDeleted(){
         TaskEntity taskEntityA = TestDataUtil.createTestTaskEntityA(taskGroup);
         underTest.save(taskEntityA);

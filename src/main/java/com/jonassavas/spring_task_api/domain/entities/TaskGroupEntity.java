@@ -40,7 +40,7 @@ public class TaskGroupEntity {
     @JsonManagedReference // Prevent recursion
     private List<TaskEntity> tasks = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "task_board_id", nullable = false)
     private TaskBoardEntity taskBoard;
 

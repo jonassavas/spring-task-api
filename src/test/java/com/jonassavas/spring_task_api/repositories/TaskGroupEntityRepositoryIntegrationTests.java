@@ -13,6 +13,8 @@ import com.jonassavas.spring_task_api.domain.entities.TaskBoardEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 
+import jakarta.transaction.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -39,15 +41,17 @@ public class TaskGroupEntityRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testThatEmptyTaskGroupCanBeCreatedAndRecalled(){
         TaskGroupEntity testTaskGroup = TestDataUtil.createTaskGroupEntityA(taskBoard);
         underTest.save(testTaskGroup);
         Optional<TaskGroupEntity> result = underTest.findById(testTaskGroup.getId());
         assertThat(result).isPresent();
-        assertThat(result.get()).extracting(TaskGroupEntity::getId).isEqualTo(testTaskGroup.getId());
+        assertThat(result.get()).isEqualTo(testTaskGroup);
     }
 
     @Test
+    @Transactional
     public void testThatMultipleEmptyTaskGroupsCanBeCreatedAndRecalled(){
         TaskGroupEntity testTaskGroupA = TestDataUtil.createTaskGroupEntityA(taskBoard);
         underTest.save(testTaskGroupA);
@@ -57,12 +61,12 @@ public class TaskGroupEntityRepositoryIntegrationTests {
         underTest.save(testTaskGroupC);
         Iterable<TaskGroupEntity> result = underTest.findAll();
         assertThat(result)
-                .extracting(TaskGroupEntity::getId)
                 .hasSize(3)
-                .containsExactly(testTaskGroupA.getId(), testTaskGroupB.getId(), testTaskGroupC.getId());
+                .containsExactly(testTaskGroupA, testTaskGroupB, testTaskGroupC);
     }
 
     @Test
+    @Transactional
     public void testThatTaskGroupWithTasksCanBeCreatedAndRecalled(){
         TaskGroupEntity testTaskGroup = TestDataUtil.createTaskGroupEntityA(taskBoard);
         TaskEntity testTaskEntityA = TestDataUtil.createTestTaskEntityA(testTaskGroup);
@@ -82,6 +86,7 @@ public class TaskGroupEntityRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testThatTaskGroupCanBeUpdated(){
         TaskGroupEntity testTaskGroupA = TestDataUtil.createTaskGroupEntityA(taskBoard);
         underTest.save(testTaskGroupA);
@@ -96,6 +101,7 @@ public class TaskGroupEntityRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testThatTaskGroupCanBeDeleted(){
         TaskGroupEntity testTaskGroupA = TestDataUtil.createTaskGroupEntityA(taskBoard);
         underTest.save(testTaskGroupA);
