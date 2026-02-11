@@ -8,6 +8,8 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 public interface TaskGroupService {
     TaskGroupEntity save(TaskGroupEntity taskGroupEntity);
 
+    TaskGroupEntity createTaskGroup(Long boardId, TaskGroupEntity taskGroupEntity);
+
     List<TaskGroupEntity> findAll();
 
     List<TaskGroupEntity> findAllWithTasks();

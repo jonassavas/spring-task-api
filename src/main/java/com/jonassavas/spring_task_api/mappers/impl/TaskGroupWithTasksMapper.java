@@ -14,11 +14,17 @@ public class TaskGroupWithTasksMapper implements Mapper<TaskGroupEntity, TaskGro
 
     public TaskGroupWithTasksMapper(ModelMapper modelMapper){
         this.modelMapper = modelMapper;
+
+        // Skip taskGroup when mapping DTO -> Entity
+        this.modelMapper.typeMap(TaskGroupWithTasksDto.class, TaskGroupEntity.class)
+                .addMappings(mapper -> mapper.skip(TaskGroupEntity::setTaskBoard));
     }
     
     @Override
     public TaskGroupWithTasksDto mapTo(TaskGroupEntity taskGroupEntity){
-        return modelMapper.map(taskGroupEntity, TaskGroupWithTasksDto.class);
+        TaskGroupWithTasksDto dto = modelMapper.map(taskGroupEntity, TaskGroupWithTasksDto.class);
+        dto.setTaskBoardId(taskGroupEntity.getTaskBoard().getId());
+        return dto;
     }
 
     @Override

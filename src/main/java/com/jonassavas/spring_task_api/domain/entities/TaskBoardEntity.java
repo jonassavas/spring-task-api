@@ -38,4 +38,14 @@ public class TaskBoardEntity {
     )
     @Builder.Default
     private List<TaskGroupEntity> taskGroups = new ArrayList<>();
+
+    public void addTaskGroup(TaskGroupEntity taskGroup) {
+        taskGroups.add(taskGroup);
+        taskGroup.setTaskBoard(this);
+    }
+
+    public void removeTaskGroup(TaskGroupEntity task) {
+        taskGroups.remove(task);
+        //task.setTaskGroup(null);
+    }
 }

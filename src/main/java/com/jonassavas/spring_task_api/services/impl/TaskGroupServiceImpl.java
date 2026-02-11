@@ -7,7 +7,9 @@ import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Service;
 
 import com.jonassavas.spring_task_api.domain.dto.TaskGroupRequestDto;
+import com.jonassavas.spring_task_api.domain.entities.TaskBoardEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
+import com.jonassavas.spring_task_api.repositories.TaskBoardRepository;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 
@@ -19,13 +21,28 @@ import jakarta.transaction.Transactional;
 public class TaskGroupServiceImpl implements TaskGroupService{
     
     private TaskGroupRepository taskGroupRepository;
+    private TaskBoardRepository taskBoardRepository;
 
-    public TaskGroupServiceImpl(TaskGroupRepository taskGroupRepository){
+    public TaskGroupServiceImpl(TaskGroupRepository taskGroupRepository,
+                                TaskBoardRepository taskBoardRepository){
         this.taskGroupRepository = taskGroupRepository;
+        this.taskBoardRepository = taskBoardRepository;
     }
 
     @Override
     public TaskGroupEntity save(TaskGroupEntity taskGroupEntity){
+        return taskGroupRepository.save(taskGroupEntity);
+    }
+
+    // TODO: Fix the create method to ensure that taskboard is fully functional
+    @Override
+    public TaskGroupEntity createTaskGroup(Long boardId, TaskGroupEntity taskGroupEntity){
+        TaskBoardEntity taskBoard = taskBoardRepository.findById(boardId)
+            .orElseThrow(() -> new EntityNotFoundException("Taskboard not found with id: " + boardId));
+        
+        taskGroupEntity.setTaskBoard(taskBoard);
+        taskBoard.addTaskGroup(taskGroupEntity);
+
         return taskGroupRepository.save(taskGroupEntity);
     }
 
