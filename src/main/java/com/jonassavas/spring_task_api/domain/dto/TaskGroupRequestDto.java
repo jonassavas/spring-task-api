@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TaskGroupRequestDto {
+    //private Long id;
     private String taskGroupName;
     private Long taskBoardId;
 }

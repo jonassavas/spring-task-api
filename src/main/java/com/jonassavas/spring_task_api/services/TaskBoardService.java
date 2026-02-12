@@ -14,5 +14,6 @@ public interface TaskBoardService {
     TaskBoardEntity findById(Long id);
 
     // Delete all taskGroups?
+    boolean isExist(Long id);
     
 }

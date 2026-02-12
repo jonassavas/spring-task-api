@@ -56,7 +56,7 @@ public class TestDataUtil {
     
     public static TaskGroupRequestDto createTaskGroupRequestDtoA(TaskBoardEntity taskBoard){
         return TaskGroupRequestDto.builder()
-                                //.taskBoardId(taskBoard.getId())
+                                .taskBoardId(taskBoard.getId())
                                 .taskGroupName("Task Group A")
                                 .build();
     }

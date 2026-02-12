@@ -24,7 +24,7 @@ public class TaskRequestMapper implements Mapper<TaskEntity, TaskRequestDto> {
     @Override
     public TaskRequestDto mapTo(TaskEntity taskEntity) {
         TaskRequestDto dto = modelMapper.map(taskEntity, TaskRequestDto.class);
-        //dto.setTaskGroupId(taskEntity.getTaskGroup().getId());
+        dto.setTaskGroupId(taskEntity.getTaskGroup().getId());
         return dto;
     }
 

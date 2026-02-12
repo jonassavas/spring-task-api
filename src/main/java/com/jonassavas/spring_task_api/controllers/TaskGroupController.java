@@ -11,6 +11,7 @@ import com.jonassavas.spring_task_api.domain.entities.TaskEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.mappers.Mapper;
 import com.jonassavas.spring_task_api.repositories.TaskBoardRepository;
+import com.jonassavas.spring_task_api.services.TaskBoardService;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
 import com.jonassavas.spring_task_api.services.TaskService;
 
@@ -37,18 +38,18 @@ public class TaskGroupController {
     private Mapper<TaskGroupEntity, TaskGroupRequestDto> taskGroupRequestMapper;
     private Mapper<TaskGroupEntity, TaskGroupWithTasksDto> taskGroupWithTasksMapper;
     private Mapper<TaskGroupEntity, TaskGroupDto> taskGroupMapper;
-    private TaskBoardRepository taskBoardRepository;
+    private TaskBoardService taskBoardService;
 
     public TaskGroupController(TaskGroupService taskGroupService, 
                                 Mapper<TaskGroupEntity, TaskGroupRequestDto> taskGroupRequestMapper,
                                 Mapper<TaskGroupEntity, TaskGroupDto> taskGroupMapper,
                                 Mapper<TaskGroupEntity, TaskGroupWithTasksDto> taskGroupWithTasksMapper,
-                                TaskBoardRepository taskBoardRepository){
+                                TaskBoardService taskBoardService){
         this.taskGroupService = taskGroupService;
         this.taskGroupRequestMapper = taskGroupRequestMapper;
         this.taskGroupMapper = taskGroupMapper;
         this.taskGroupWithTasksMapper = taskGroupWithTasksMapper;
-        this.taskBoardRepository = taskBoardRepository;
+        this.taskBoardService = taskBoardService;
     }
 
     @PostMapping(path = "/boards/{boardId}/groups")
@@ -57,13 +58,14 @@ public class TaskGroupController {
 
         
         //taskGroup.setTaskBoardId(boardId);
-        TaskBoardEntity taskBoard = taskBoardRepository.findById(boardId)
-            .orElseThrow(() -> new EntityNotFoundException("Taskboard not found with id: " + boardId));
+        if(!taskBoardService.isExist(boardId)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         TaskGroupEntity taskGroupEntity = taskGroupRequestMapper.mapFrom(taskGroup);
         TaskGroupEntity savedTaskGroupEntity = taskGroupService.createTaskGroup(boardId, taskGroupEntity);
-
+        TaskGroupRequestDto responseDto = taskGroupRequestMapper.mapTo(savedTaskGroupEntity);
         
-        return new ResponseEntity<>(taskGroupRequestMapper.mapTo(savedTaskGroupEntity), HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/boards/{boardId}/groups")

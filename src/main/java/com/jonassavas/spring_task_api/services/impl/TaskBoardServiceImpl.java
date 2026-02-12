@@ -1,9 +1,15 @@
 package com.jonassavas.spring_task_api.services.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.jonassavas.spring_task_api.domain.entities.TaskBoardEntity;
 import com.jonassavas.spring_task_api.repositories.TaskBoardRepository;
 import com.jonassavas.spring_task_api.services.TaskBoardService;
 
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
 public class TaskBoardServiceImpl implements TaskBoardService {
 
     private TaskBoardRepository taskBoardRepository;
@@ -30,5 +36,10 @@ public class TaskBoardServiceImpl implements TaskBoardService {
     @Override
     public TaskBoardEntity findById(Long id){
         return null;
+    }
+
+    @Override
+    public boolean isExist(Long id){
+        return taskBoardRepository.existsById(id);
     }
 }
