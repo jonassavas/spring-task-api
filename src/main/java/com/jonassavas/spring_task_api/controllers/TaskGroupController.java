@@ -112,7 +112,7 @@ public class TaskGroupController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping(path = "board/{boardId}/groups/{groupId}")
+    @PatchMapping(path = "/boards/{boardId}/groups/{groupId}")
     public ResponseEntity<TaskGroupRequestDto> updateTaskGroup(@PathVariable("groupId") Long id, @RequestBody TaskGroupRequestDto dto){
         TaskGroupEntity updated = taskGroupService.update(id, dto);
         return new ResponseEntity<>(taskGroupRequestMapper.mapTo(updated), HttpStatus.OK);
