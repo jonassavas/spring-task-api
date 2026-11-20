@@ -1,5 +1,6 @@
 package com.jonassavas.spring_task_api.domain.dto.task_group;
 
+import com.jonassavas.spring_task_api.domain.entities.TaskSortMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,14 @@ public class TaskGroupDto {
     private Long id;
 
     private String taskGroupName;
+
+    private String color;
+
+    private Integer position;
+
+    private boolean strikeThroughTasks;
+
+    private TaskSortMode sortMode;
 
     private Long taskBoardId;
 }

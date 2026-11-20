@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -103,6 +104,32 @@ public class GlobalExceptionHandler {
                         request.getRequestURI());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleBadRequest(
+            IllegalArgumentException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest()
+                .body(
+                        new ApiError(
+                                LocalDateTime.now(),
+                                400,
+                                "Bad Request",
+                                ex.getMessage(),
+                                request.getRequestURI()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleUnreadableRequest(
+            HttpMessageNotReadableException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest()
+                .body(
+                        new ApiError(
+                                LocalDateTime.now(),
+                                400,
+                                "Bad Request",
+                                "Invalid request body",
+                                request.getRequestURI()));
     }
 
     @ExceptionHandler(Exception.class)

@@ -34,6 +34,7 @@ public class TaskBoardMapper implements Mapper<TaskBoardEntity, TaskBoardDto> {
         return TaskBoardWithGroupsDto.builder()
                 .id(entity.getId())
                 .taskBoardName(entity.getTaskBoardName())
+                .position(entity.getPosition())
                 .taskGroups(
                         entity.getTaskGroups().stream()
                                 .map(taskGroupWithTasksMapper::mapTo)

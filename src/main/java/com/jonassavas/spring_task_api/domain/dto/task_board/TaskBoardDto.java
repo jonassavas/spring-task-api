@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class TaskBoardDto {
     private Long id;
     private String taskBoardName;
+
+    private Integer position;
 }

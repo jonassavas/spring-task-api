@@ -4,6 +4,7 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +15,15 @@ retrieval, update, delete, and search operation on objects.*/
 @Repository
 public interface TaskGroupRepository extends JpaRepository<TaskGroupEntity, Long> {
 
-    List<TaskGroupEntity> findByTaskBoardIdAndTaskBoardOwnerUsername(Long boardId, String username);
+    List<TaskGroupEntity> findByTaskBoardIdAndTaskBoardOwnerUsernameOrderByPositionAsc(
+            Long boardId, String username);
 
     Optional<TaskGroupEntity> findByIdAndTaskBoardOwnerUsername(Long id, String username);
+
+    @Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query(
+            "select g from TaskGroupEntity g where g.id = :id and g.taskBoard.owner.username = :username")
+    Optional<TaskGroupEntity> findByIdAndTaskBoardOwnerUsernameForUpdate(Long id, String username);
 
     @Query(
             """
@@ -33,4 +40,13 @@ public interface TaskGroupRepository extends JpaRepository<TaskGroupEntity, Long
         WHERE tg.id = :id AND tg.taskBoard.owner.username = :username
     """)
     Optional<TaskGroupEntity> findByIdWithTasksAndUsername(Long id, String username);
+
+    @Query(
+            """
+        SELECT MAX(tg.position)
+        FROM TaskGroupEntity tg
+        WHERE tg.taskBoard.id = :boardId
+        AND tg.taskBoard.owner.username = :username
+    """)
+    Integer findMaxPositionByBoardIdAndUsername(Long boardId, String username);
 }

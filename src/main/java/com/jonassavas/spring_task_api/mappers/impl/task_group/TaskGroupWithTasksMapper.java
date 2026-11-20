@@ -3,15 +3,19 @@ package com.jonassavas.spring_task_api.mappers.impl.task_group;
 import com.jonassavas.spring_task_api.domain.dto.task_group.TaskGroupWithTasksDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import com.jonassavas.spring_task_api.mappers.Mapper;
+import com.jonassavas.spring_task_api.mappers.impl.task.TaskMapper;
+import com.jonassavas.spring_task_api.services.TaskOrdering;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskGroupWithTasksMapper implements Mapper<TaskGroupEntity, TaskGroupWithTasksDto> {
     private ModelMapper modelMapper;
+    private final TaskMapper taskMapper;
 
-    public TaskGroupWithTasksMapper(ModelMapper modelMapper) {
+    public TaskGroupWithTasksMapper(ModelMapper modelMapper, TaskMapper taskMapper) {
         this.modelMapper = modelMapper;
+        this.taskMapper = taskMapper;
 
         // Skip taskGroup when mapping DTO -> Entity
         this.modelMapper
@@ -23,6 +27,11 @@ public class TaskGroupWithTasksMapper implements Mapper<TaskGroupEntity, TaskGro
     public TaskGroupWithTasksDto mapTo(TaskGroupEntity taskGroupEntity) {
         TaskGroupWithTasksDto dto = modelMapper.map(taskGroupEntity, TaskGroupWithTasksDto.class);
         dto.setTaskBoardId(taskGroupEntity.getTaskBoard().getId());
+        dto.setTasks(
+                TaskOrdering.order(taskGroupEntity.getTasks(), taskGroupEntity.getSortMode())
+                        .stream()
+                        .map(taskMapper::mapTo)
+                        .toList());
         return dto;
     }
 

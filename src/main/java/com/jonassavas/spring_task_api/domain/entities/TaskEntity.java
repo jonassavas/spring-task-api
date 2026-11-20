@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,7 +26,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "tasks")
+@Table(
+        name = "tasks",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"group_id", "position"})})
 @ToString(exclude = "taskGroup")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class TaskEntity {
@@ -36,6 +40,11 @@ public class TaskEntity {
 
     @Column(nullable = false, length = 100)
     private String taskName;
+
+    @Column(nullable = false)
+    private Integer position;
+
+    private LocalDate dueDate;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)

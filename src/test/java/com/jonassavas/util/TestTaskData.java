@@ -8,15 +8,15 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 public class TestTaskData {
     // Entities ----------------------------------------------------------
     public static TaskEntity createTestTaskEntityA(TaskGroupEntity taskGroup) {
-        return TaskEntity.builder().taskName("HomeworkA").taskGroup(taskGroup).build();
+        return TaskEntity.builder().taskName("HomeworkA").position(0).taskGroup(taskGroup).build();
     }
 
     public static TaskEntity createTestTaskEntityB(TaskGroupEntity taskGroup) {
-        return TaskEntity.builder().taskName("HomeworkB").taskGroup(taskGroup).build();
+        return TaskEntity.builder().taskName("HomeworkB").position(1).taskGroup(taskGroup).build();
     }
 
     public static TaskEntity createTestTaskEntityC(TaskGroupEntity taskGroup) {
-        return TaskEntity.builder().taskName("HomeworkC").taskGroup(taskGroup).build();
+        return TaskEntity.builder().taskName("HomeworkC").position(2).taskGroup(taskGroup).build();
     }
 
     // CREATE DTOs -------------------------------------------------------------

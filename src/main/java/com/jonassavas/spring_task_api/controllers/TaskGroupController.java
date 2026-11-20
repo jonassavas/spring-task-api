@@ -1,10 +1,12 @@
 package com.jonassavas.spring_task_api.controllers;
 
 import com.jonassavas.spring_task_api.domain.dto.task_group.CreateTaskGroupRequestDto;
+import com.jonassavas.spring_task_api.domain.dto.task_group.ReorderTaskGroupsRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.task_group.TaskGroupDto;
 import com.jonassavas.spring_task_api.domain.dto.task_group.TaskGroupWithTasksDto;
 import com.jonassavas.spring_task_api.domain.dto.task_group.UpdateTaskGroupRequestDto;
 import com.jonassavas.spring_task_api.services.TaskGroupService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,17 @@ public class TaskGroupController {
         TaskGroupWithTasksDto dto = taskGroupService.findByIdWithTasks(groupId);
 
         return ResponseEntity.ok(dto);
+    }
+
+    @PatchMapping("/reorder")
+    @Operation(summary = "Replace the order of all groups on this board")
+    public ResponseEntity<Void> reorderTaskGroups(
+            @PathVariable Long boardId,
+            @Valid @RequestBody ReorderTaskGroupsRequestDto requestDto) {
+
+        taskGroupService.reorderTaskGroups(boardId, requestDto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{groupId}")

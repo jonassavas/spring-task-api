@@ -46,7 +46,14 @@ public class TaskGroupRepositoryIntegrationTest {
         Optional<TaskGroupEntity> result = underTest.findById(saved.getId());
 
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(saved);
+
+        TaskGroupEntity savedGroup = result.get();
+
+        assertThat(savedGroup.getTaskGroupName()).isEqualTo(testTaskGroup.getTaskGroupName());
+
+        assertThat(savedGroup.getPosition()).isEqualTo(testTaskGroup.getPosition());
+
+        assertThat(savedGroup.getColor()).isEqualTo(testTaskGroup.getColor());
     }
 
     @Test
@@ -58,7 +65,7 @@ public class TaskGroupRepositoryIntegrationTest {
                 underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityB(taskBoard));
 
         TaskGroupEntity groupC =
-                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityB(taskBoard));
+                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityC(taskBoard));
 
         Iterable<TaskGroupEntity> result = underTest.findAll();
 
@@ -88,12 +95,14 @@ public class TaskGroupRepositoryIntegrationTest {
                 underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityA(taskBoard));
 
         group.setTaskGroupName("UPDATED");
+        group.setColor("#18a3e4");
         underTest.saveAndFlush(group);
 
         Optional<TaskGroupEntity> result = underTest.findById(group.getId());
 
         assertThat(result).isPresent();
         assertThat(result.get().getTaskGroupName()).isEqualTo("UPDATED");
+        assertThat(result.get().getColor()).isEqualTo("#18a3e4");
     }
 
     @Test
@@ -113,6 +122,55 @@ public class TaskGroupRepositoryIntegrationTest {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    public void testThatTaskGroupsAreReturnedInPositionOrder() {
+
+        TaskGroupEntity groupA =
+                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityA(taskBoard));
+
+        TaskGroupEntity groupB =
+                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityB(taskBoard));
+
+        TaskGroupEntity groupC =
+                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityC(taskBoard));
+
+        var result =
+                underTest.findByTaskBoardIdAndTaskBoardOwnerUsernameOrderByPositionAsc(
+                        taskBoard.getId(), user.getUsername());
+
+        assertThat(result).hasSize(3);
+
+        assertThat(result)
+                .extracting(TaskGroupEntity::getId)
+                .containsExactly(groupA.getId(), groupB.getId(), groupC.getId());
+    }
+
+    @Test
+    public void testThatTaskGroupPositionsArePersistedCorrectly() {
+
+        TaskGroupEntity group =
+                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityA(taskBoard));
+
+        Optional<TaskGroupEntity> result = underTest.findById(group.getId());
+
+        assertThat(result).isPresent();
+
+        assertThat(result.get().getPosition()).isEqualTo(0);
+    }
+
+    @Test
+    public void testThatTaskGroupColorIsPersisted() {
+
+        TaskGroupEntity group =
+                underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityA(taskBoard));
+
+        Optional<TaskGroupEntity> result = underTest.findById(group.getId());
+
+        assertThat(result).isPresent();
+
+        assertThat(result.get().getColor()).isEqualTo("#FF0000");
+    }
+
     // Custom repository methods -----------------------------------------
 
     // List<TaskGroupEntity> findByTaskBoardIdAndTaskBoardOwnerUsername(Long boardId, String
@@ -126,7 +184,7 @@ public class TaskGroupRepositoryIntegrationTest {
                 underTest.saveAndFlush(TestTaskGroupData.createTaskGroupEntityB(taskBoard));
 
         var result =
-                underTest.findByTaskBoardIdAndTaskBoardOwnerUsername(
+                underTest.findByTaskBoardIdAndTaskBoardOwnerUsernameOrderByPositionAsc(
                         taskBoard.getId(), user.getUsername());
 
         assertThat(result).hasSize(2).containsExactly(groupA, groupB);

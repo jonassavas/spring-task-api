@@ -1,9 +1,11 @@
 package com.jonassavas.spring_task_api.controllers;
 
 import com.jonassavas.spring_task_api.domain.dto.task.CreateTaskRequestDto;
+import com.jonassavas.spring_task_api.domain.dto.task.ReorderTasksRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.task.TaskDto;
 import com.jonassavas.spring_task_api.domain.dto.task.UpdateTaskRequestDto;
 import com.jonassavas.spring_task_api.services.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -46,6 +48,16 @@ public class TaskController {
 
         TaskDto responseDto = taskService.update(taskId, requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/tasks/reorder")
+    @Operation(summary = "Reorder manual tasks or move them between manual groups")
+    public ResponseEntity<Void> reorderTasks(
+            @Valid @RequestBody ReorderTasksRequestDto requestDto) {
+
+        taskService.reorderTasks(requestDto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/tasks/{taskId}")

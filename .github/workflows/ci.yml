@@ -2,24 +2,53 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: task_api_test
+          POSTGRES_USER: task_api_test
+          POSTGRES_PASSWORD: task_api_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U task_api_test -d task_api_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'maven'
+          distribution: temurin
+          java-version: 21
+          cache: maven
 
-      - name: Build and test with Maven
-        run: mvn -B verify
+      - name: Check formatting
+        run: mvn -B spotless:check
+
+      - name: Build, migrate, and test with Maven
+        run: mvn -B clean verify
+        env:
+          RUN_POSTGRES_TESTS: "true"
+          TEST_DATABASE_URL: jdbc:postgresql://localhost:5432/task_api_test
+          TEST_DATABASE_USERNAME: task_api_test
+          TEST_DATABASE_PASSWORD: task_api_test
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true

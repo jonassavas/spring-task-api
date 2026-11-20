@@ -1,10 +1,12 @@
 package com.jonassavas.spring_task_api.controllers;
 
 import com.jonassavas.spring_task_api.domain.dto.task_board.CreateTaskBoardRequestDto;
+import com.jonassavas.spring_task_api.domain.dto.task_board.ReorderTaskBoardsRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.task_board.TaskBoardDto;
 import com.jonassavas.spring_task_api.domain.dto.task_board.TaskBoardWithGroupsDto;
 import com.jonassavas.spring_task_api.domain.dto.task_board.UpdateTaskBoardRequestDto;
 import com.jonassavas.spring_task_api.services.TaskBoardService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ public class TaskBoardController {
     }
 
     @PostMapping
+    @Operation(summary = "Create an empty or preset board")
     public ResponseEntity<TaskBoardDto> createTaskBoard(
             @Valid @RequestBody CreateTaskBoardRequestDto requestDto) {
         TaskBoardDto responseDto = taskBoardService.createTaskBoard(requestDto);
@@ -42,6 +45,14 @@ public class TaskBoardController {
         List<TaskBoardDto> boards = taskBoardService.listTaskBoardsForCurrentUser();
 
         return ResponseEntity.ok(boards);
+    }
+
+    @PatchMapping("/reorder")
+    @Operation(summary = "Replace the order of all boards owned by the caller")
+    public ResponseEntity<Void> reorderTaskBoards(
+            @Valid @RequestBody ReorderTaskBoardsRequestDto requestDto) {
+        taskBoardService.reorderTaskBoards(requestDto);
+        return ResponseEntity.noContent().build();
     }
 
     // Might need to get taskGroups here aswell (lazy loaded)

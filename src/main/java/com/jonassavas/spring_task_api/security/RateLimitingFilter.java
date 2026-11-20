@@ -64,8 +64,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             // General API protection
             limit =
                     Bandwidth.builder()
-                            .capacity(30)
-                            .refillIntervally(30, Duration.ofMinutes(1))
+                            .capacity(300)
+                            .refillIntervally(300, Duration.ofMinutes(1))
                             .build();
         }
 

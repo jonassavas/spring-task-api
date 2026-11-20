@@ -126,7 +126,7 @@ public class TaskRepositoryIntegrationTest {
         TaskEntity taskB = underTest.saveAndFlush(TestTaskData.createTestTaskEntityB(taskGroup));
 
         var result =
-                underTest.findByTaskGroupIdAndTaskGroupTaskBoardOwnerUsername(
+                underTest.findByTaskGroupIdAndTaskGroupTaskBoardOwnerUsernameOrderByPositionAsc(
                         taskGroup.getId(), user.getUsername());
 
         assertThat(result)
@@ -140,7 +140,7 @@ public class TaskRepositoryIntegrationTest {
         underTest.saveAndFlush(TestTaskData.createTestTaskEntityA(taskGroup));
 
         var result =
-                underTest.findByTaskGroupIdAndTaskGroupTaskBoardOwnerUsername(
+                underTest.findByTaskGroupIdAndTaskGroupTaskBoardOwnerUsernameOrderByPositionAsc(
                         taskGroup.getId(), "wrongUser");
 
         assertThat(result).isEmpty();
