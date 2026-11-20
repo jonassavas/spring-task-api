@@ -1,8 +1,8 @@
 package com.jonassavas.spring_task_api.domain.dto.task;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +18,13 @@ public class ReorderTasksRequestDto {
 
     @NotNull private Long destinationGroupId;
 
-    @NotNull private List<Long> sourceTaskIds;
+    @Schema(
+            description = "Complete final order of tasks remaining in the source group",
+            example = "[102]")
+    @NotNull
+    private List<@NotNull Long> sourceTaskIds;
 
-    @NotNull private List<Long> destinationTaskIds;
+    @Schema(description = "Complete final order in the destination group", example = "[201,101]")
+    @NotNull
+    private List<@NotNull Long> destinationTaskIds;
 }

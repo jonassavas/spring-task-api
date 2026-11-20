@@ -1,7 +1,8 @@
 package com.jonassavas.spring_task_api.domain.dto.task_group;
 
+import com.jonassavas.spring_task_api.domain.entities.TaskSortMode;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,11 @@ public class UpdateTaskGroupRequestDto {
     @Pattern(regexp = "^#([A-Fa-f0-9]{6})$", message = "Color must be a valid hex color")
     private String color;
 
-    @PositiveOrZero(message = "Position must be zero or greater")
-    private Integer position;
+    @Schema(description = "Show task names with strikethrough styling", example = "true")
+    private Boolean strikeThroughTasks;
+
+    @Schema(
+            description = "Manual order or automatic ascending due-date order",
+            example = "DUE_DATE_ASC")
+    private TaskSortMode sortMode;
 }

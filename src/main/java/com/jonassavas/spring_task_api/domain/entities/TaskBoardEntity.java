@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "task_boards")
+@Table(
+        name = "task_boards",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"owner_id", "position"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,6 +46,9 @@ public class TaskBoardEntity {
 
     @Column(nullable = false, length = 50)
     private String taskBoardName;
+
+    @Column(nullable = false)
+    private Integer position;
 
     @OneToMany(mappedBy = "taskBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC") // position ascending order

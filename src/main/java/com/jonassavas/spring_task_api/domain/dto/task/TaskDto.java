@@ -1,5 +1,6 @@
 package com.jonassavas.spring_task_api.domain.dto.task;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class TaskDto {
     private String taskName;
 
     private Integer position;
+
+    private LocalDate dueDate;
 }

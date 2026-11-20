@@ -1,5 +1,7 @@
 package com.jonassavas.spring_task_api.domain.dto.task_group;
 
+import com.jonassavas.spring_task_api.domain.entities.TaskSortMode;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -20,4 +22,10 @@ public class CreateTaskGroupRequestDto {
 
     @Pattern(regexp = "^#([A-Fa-f0-9]{6})$", message = "Color must be a valid hex color")
     private String color;
+
+    @Schema(description = "Show task names with strikethrough styling", example = "false")
+    private Boolean strikeThroughTasks;
+
+    @Schema(description = "Manual order or automatic ascending due-date order", example = "MANUAL")
+    private TaskSortMode sortMode;
 }

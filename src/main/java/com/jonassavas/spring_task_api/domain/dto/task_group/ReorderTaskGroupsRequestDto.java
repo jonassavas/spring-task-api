@@ -1,6 +1,7 @@
 package com.jonassavas.spring_task_api.domain.dto.task_group;
 
-import jakarta.validation.constraints.NotEmpty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReorderTaskGroupsRequestDto {
 
-    @NotEmpty private List<Long> groupIds;
+    @Schema(description = "Every group on the board, in final order", example = "[12,10,11]")
+    @NotNull
+    private List<@NotNull Long> groupIds;
 }

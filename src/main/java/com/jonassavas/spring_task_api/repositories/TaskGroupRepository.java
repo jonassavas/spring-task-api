@@ -4,6 +4,7 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,11 @@ public interface TaskGroupRepository extends JpaRepository<TaskGroupEntity, Long
             Long boardId, String username);
 
     Optional<TaskGroupEntity> findByIdAndTaskBoardOwnerUsername(Long id, String username);
+
+    @Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query(
+            "select g from TaskGroupEntity g where g.id = :id and g.taskBoard.owner.username = :username")
+    Optional<TaskGroupEntity> findByIdAndTaskBoardOwnerUsernameForUpdate(Long id, String username);
 
     @Query(
             """

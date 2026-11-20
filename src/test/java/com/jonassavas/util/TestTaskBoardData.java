@@ -10,15 +10,27 @@ public class TestTaskBoardData {
     // Entities ----------------------------------------------------------
 
     public static TaskBoardEntity createTestTaskBoardEntityA(UserEntity user) {
-        return TaskBoardEntity.builder().taskBoardName("Task Board A").owner(user).build();
+        return TaskBoardEntity.builder()
+                .taskBoardName("Task Board A")
+                .position(0)
+                .owner(user)
+                .build();
     }
 
     public static TaskBoardEntity createTestTaskBoardEntityB(UserEntity user) {
-        return TaskBoardEntity.builder().taskBoardName("Task Board B").owner(user).build();
+        return TaskBoardEntity.builder()
+                .taskBoardName("Task Board B")
+                .position(1)
+                .owner(user)
+                .build();
     }
 
     public static TaskBoardEntity createTestTaskBoardEntityC(UserEntity user) {
-        return TaskBoardEntity.builder().taskBoardName("Task Board C").owner(user).build();
+        return TaskBoardEntity.builder()
+                .taskBoardName("Task Board C")
+                .position(2)
+                .owner(user)
+                .build();
     }
 
     // CREATE DTOs -------------------------------------------------------------

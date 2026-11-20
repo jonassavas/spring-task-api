@@ -8,15 +8,15 @@ import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
 public class TestTaskData {
     // Entities ----------------------------------------------------------
     public static TaskEntity createTestTaskEntityA(TaskGroupEntity taskGroup) {
-        return TaskEntity.builder().taskName("HomeworkA").taskGroup(taskGroup).build();
+        return TaskEntity.builder().taskName("HomeworkA").position(0).taskGroup(taskGroup).build();
     }
 
     public static TaskEntity createTestTaskEntityB(TaskGroupEntity taskGroup) {
-        return TaskEntity.builder().taskName("HomeworkB").taskGroup(taskGroup).build();
+        return TaskEntity.builder().taskName("HomeworkB").position(1).taskGroup(taskGroup).build();
     }
 
     public static TaskEntity createTestTaskEntityC(TaskGroupEntity taskGroup) {
-        return TaskEntity.builder().taskName("HomeworkC").taskGroup(taskGroup).build();
+        return TaskEntity.builder().taskName("HomeworkC").position(2).taskGroup(taskGroup).build();
     }
 
     // CREATE DTOs -------------------------------------------------------------
@@ -39,21 +39,21 @@ public class TestTaskData {
     // UPDATE DTOs -------------------------------------------------------------
     public static UpdateTaskRequestDto updateTestTaskRequestDtoA(TaskGroupEntity taskGroup) {
         return UpdateTaskRequestDto.builder()
-                //.taskGroupId(taskGroup.getId())
+                .taskGroupId(taskGroup.getId())
                 .taskName("Task A")
                 .build();
     }
 
     public static UpdateTaskRequestDto updateTestTaskRequestDtoB(TaskGroupEntity taskGroup) {
         return UpdateTaskRequestDto.builder()
-                //.taskGroupId(taskGroup.getId())
+                .taskGroupId(taskGroup.getId())
                 .taskName("Task B")
                 .build();
     }
 
     public static UpdateTaskRequestDto updateTestTaskRequestDtoC(TaskGroupEntity taskGroup) {
         return UpdateTaskRequestDto.builder()
-                //.taskGroupId(taskGroup.getId())
+                .taskGroupId(taskGroup.getId())
                 .taskName("Task C")
                 .build();
     }
@@ -61,7 +61,7 @@ public class TestTaskData {
     public static UpdateTaskRequestDto updateTestRequestTaskDto(TaskGroupEntity taskGroup) {
         return UpdateTaskRequestDto.builder()
                 .taskName("Create Task Dto")
-                //.taskGroupId(taskGroup.getId())
+                .taskGroupId(taskGroup.getId())
                 .build();
     }
 }

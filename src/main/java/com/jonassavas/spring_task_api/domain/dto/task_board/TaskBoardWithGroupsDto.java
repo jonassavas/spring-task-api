@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class TaskBoardWithGroupsDto {
     private Long id;
     private String taskBoardName;
+    private Integer position;
     private List<TaskGroupWithTasksDto> taskGroups;
 }

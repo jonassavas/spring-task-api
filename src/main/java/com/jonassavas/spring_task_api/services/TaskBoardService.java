@@ -1,6 +1,7 @@
 package com.jonassavas.spring_task_api.services;
 
 import com.jonassavas.spring_task_api.domain.dto.task_board.CreateTaskBoardRequestDto;
+import com.jonassavas.spring_task_api.domain.dto.task_board.ReorderTaskBoardsRequestDto;
 import com.jonassavas.spring_task_api.domain.dto.task_board.TaskBoardDto;
 import com.jonassavas.spring_task_api.domain.dto.task_board.TaskBoardWithGroupsDto;
 import com.jonassavas.spring_task_api.domain.dto.task_board.UpdateTaskBoardRequestDto;
@@ -27,5 +28,5 @@ public interface TaskBoardService {
 
     List<TaskBoardDto> listTaskBoardsForCurrentUser();
 
-    TaskBoardDto createDefaultConfiguration();
+    void reorderTaskBoards(ReorderTaskBoardsRequestDto dto);
 }

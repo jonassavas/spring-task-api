@@ -7,6 +7,7 @@ import com.jonassavas.spring_task_api.domain.dto.task_group.TaskGroupWithTasksDt
 import com.jonassavas.spring_task_api.domain.dto.task_group.UpdateTaskGroupRequestDto;
 import com.jonassavas.spring_task_api.domain.entities.TaskBoardEntity;
 import com.jonassavas.spring_task_api.domain.entities.TaskGroupEntity;
+import com.jonassavas.spring_task_api.domain.entities.TaskSortMode;
 import com.jonassavas.spring_task_api.mappers.Mapper;
 import com.jonassavas.spring_task_api.repositories.TaskBoardRepository;
 import com.jonassavas.spring_task_api.repositories.TaskGroupRepository;
@@ -16,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,7 @@ public class TaskGroupServiceImpl implements TaskGroupService {
 
         TaskBoardEntity taskBoard =
                 taskBoardRepository
-                        .findByIdAndOwnerUsername(boardId, username)
+                        .findByIdAndOwnerUsernameForUpdate(boardId, username)
                         .orElseThrow(
                                 () ->
                                         new EntityNotFoundException(
@@ -66,6 +68,9 @@ public class TaskGroupServiceImpl implements TaskGroupService {
                         .taskGroupName(dto.getTaskGroupName())
                         .color(dto.getColor())
                         .position(nextPosition)
+                        .strikeThroughTasks(Boolean.TRUE.equals(dto.getStrikeThroughTasks()))
+                        .sortMode(
+                                dto.getSortMode() == null ? TaskSortMode.MANUAL : dto.getSortMode())
                         .build();
 
         taskBoard.addTaskGroup(taskGroup); // sets relationship
@@ -147,6 +152,14 @@ public class TaskGroupServiceImpl implements TaskGroupService {
             taskGroup.setColor(dto.getColor());
         }
 
+        if (dto.getStrikeThroughTasks() != null) {
+            taskGroup.setStrikeThroughTasks(dto.getStrikeThroughTasks());
+        }
+
+        if (dto.getSortMode() != null) {
+            taskGroup.setSortMode(dto.getSortMode());
+        }
+
         return taskGroupMapper.mapTo(taskGroup);
     }
 
@@ -173,27 +186,32 @@ public class TaskGroupServiceImpl implements TaskGroupService {
 
         TaskBoardEntity board =
                 taskBoardRepository
-                        .findByIdAndOwnerUsername(boardId, username)
+                        .findByIdAndOwnerUsernameForUpdate(boardId, username)
                         .orElseThrow(
                                 () ->
                                         new EntityNotFoundException(
                                                 "Taskboard not found or not owned by user"));
 
+        List<TaskGroupEntity> groups =
+                taskGroupRepository.findByTaskBoardIdAndTaskBoardOwnerUsernameOrderByPositionAsc(
+                        board.getId(), username);
         Map<Long, TaskGroupEntity> groupMap =
-                board.getTaskGroups().stream()
+                groups.stream()
                         .collect(Collectors.toMap(TaskGroupEntity::getId, Function.identity()));
-
         List<Long> orderedIds = dto.getGroupIds();
-
+        Set<Long> uniqueIds = Set.copyOf(orderedIds);
+        if (orderedIds.size() != groups.size()
+                || uniqueIds.size() != orderedIds.size()
+                || !uniqueIds.equals(groupMap.keySet())) {
+            throw new IllegalArgumentException(
+                    "Group IDs must contain every group on the board exactly once");
+        }
+        for (int i = 0; i < groups.size(); i++) {
+            groups.get(i).setPosition(-i - 1);
+        }
+        taskGroupRepository.flush();
         for (int i = 0; i < orderedIds.size(); i++) {
-
-            Long groupId = orderedIds.get(i);
-
-            TaskGroupEntity group = groupMap.get(groupId);
-
-            if (group != null) {
-                group.setPosition(i);
-            }
+            groupMap.get(orderedIds.get(i)).setPosition(i);
         }
     }
 }
